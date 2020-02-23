@@ -1,202 +1,717 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录中...">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mddxz.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="敬活着">
 <meta property="og:url" content="https://mddxz.cn/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="记录中...">
-<meta property="og:locale" content="zh_CH">
+<meta property="og:site_name" content="敬活着">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="MD小智">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-<meta name="generator" content="Hexo 4.2.0"></head>
+<link rel="canonical" href="https://mddxz.cn/">
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">MD小智</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mddxz.cn"></form>
-      </div>
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: true,
+    isPost: false
+  };
+</script>
+
+  <title>敬活着</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/02/23/hello-world/" class="article-date">
-  <time datetime="2020-02-23T11:26:32.301Z" itemprop="datePublished">2020-02-23</time>
-</a>
-    
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">敬活着</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
   </div>
-  <div class="article-inner">
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-about"></i>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
     
-    
-      <header class="article-header">
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/23/hello-world/">Hello World</a>
-    </h1>
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mddxz.cn/undefined/undefined.html">
 
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MD小智">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="敬活着">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/undefined/undefined.html" class="post-title-link" itemprop="url">12306候补制度</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-23 16:30:51 / 修改时间：16:33:04" itemprop="dateCreated datePublished" datetime="2020-02-23T16:30:51Z">2020-02-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%94%9F%E6%B4%BB%E9%BB%91%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">生活黑客</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>640</span>
+            </span>
+
+        </div>
       </header>
+
     
-    <div class="article-entry" itemprop="articleBody">
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+          <p>这两天需要买一张火车票，但是打开12306APP时候发现已经卖完了，就想着是不是要抢票软件去买加速包了，但是看到12306提示的是 候补 而不是无票，就去了解了一下这个<strong>候补</strong>的规则，真香！</p>
+<p>首先大概说一下<strong>没有候补之前售票流程</strong>:所有官方放出来的票会直接进入一个 票池 ，12306官网、客户端以及所有抢票软件都是在这个票池中买票，当没有票的时候其实大家都买不到票，但是一发现有人退票，因为软件可以一直监测票池，所以就比人有优势抢到票，当然这是 以前 。</p>
+<p>再来看看现在<strong>有了候补制度的售票流程</strong>:因为存在候补，在放出的票 进入票池之前 会先查看是否有候补订单，如果有直接根据候补订单的下单时间顺序（注意这里是直接根据订单的提交时间顺序！）将票分配给对应的订单，这样这张票就已经售出不会进入票池，当没有候补订单时才会进入票池，接下来才是各类APP和后面的乘客继续购买。</p>
+<p>当然候补终止时间为“不晚于开车前一天的19:00”，所以在这个时间节点之后候补通道关闭，也就是开车前一天的七点之后不可以进行候补，如果这时候还没有买到票就需要去票池等别人退票了，这个时间到开车前停止售票这个时间段才是12306给抢票软件留下的生存空间。</p>
+<p>现在我们可以分析一下，候补通道有效时，抢票软件其实是在这个候补订单之后买票，相对于这个候补机制完全没有了优势。那么我们买票完全可以直接在12306官网进行购买或候补，成功率明显高于抢票软件，<del>而且不用去到处给别人分享加速包。</del>而在候补通道关闭后剩下那一段时间内，你可以尽情去用你喜爱的抢票软件了。</p>
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="https://mddxz.cn/2020/02/23/hello-world/" data-id="ck6z5wphs0000ncue5uf2a216" class="article-share-link">Share</a>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mddxz.cn/undefined/undefined.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MD小智">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="敬活着">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/undefined/undefined.html" class="post-title-link" itemprop="url">去你的，多愁善感</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-04 21:50:03" itemprop="dateCreated datePublished" datetime="2019-10-04T21:50:03Z">2019-10-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 16:53:09" itemprop="dateModified" datetime="2020-02-23T16:53:09Z">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>517</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
+          <p>2019-10-04 21:50:38 星期五<br>    一直在想找一个地方记录一些自己的东西，现在这个社交如此方便的时代，真的很难找到一点自己真正陌生的地方存放灵魂了。我也不知道这个网站有多少认识我的人能看到，不过也没关系，再过几个月这个网站也就不一定会存在了吧，毕竟我的阿里云也不一定会继续付费了。<br>    其实今天本来心情还算不错，但是要“学着”看书的我，看了点让人沉重的东西，再加上这两天也在思考与一些东西，就不妨在这里记录下来，就像小时候写日记的密码本一样，谁也不知道那里面自己的心事会在什么时候被哪个人看到，但是总得找个地方吧。<br>    今天是出去和超哥出去完了半天，超哥是我的大学的队友，我俩都试着约另一个朋友出来，我也想着去叫其他的朋友，但是都是这样那样的原因没法出来，我其实一直在标榜自己是个向前看、不恋旧的人，但是习惯没法骗自己，所以很想和以前的朋友待着，又不愿意承认这样的自己。<br>    不知道是不是大家都一瞬间长大了，毕业后已经三个月了，感觉闲聊的时间越来越少，今天给几个朋友打电话都没接上，有朋友给我打也接上，不知道我们都在忙着干什么….<br>    听着痛仰乐队的歌，心里突然一暖，难道这就是他们口中口摇滚这东西更加高级一点的原因么？不管了，不写了，听歌，换个情绪。</p>
+
       
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mddxz.cn/undefined/undefined.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MD小智">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="敬活着">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/undefined/undefined.html" class="post-title-link" itemprop="url">盼着毕业，盼到了毕业</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-18 18:22:35" itemprop="dateCreated datePublished" datetime="2019-08-18T18:22:35Z">2019-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 16:51:44" itemprop="dateModified" datetime="2020-02-23T16:51:44Z">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>记录于2019-08-18 22:27:48 星期日  深圳-南山区的宿舍</p>
+<hr />
+
+<pre><code>又一个周末就这样过去了，从学校出来已经过了整整两个月了，从刚进公司的那种小心翼翼，到现在每天基本上很积极的数日子盼周末，到周末又是浑浑噩噩，基本上周内对周末的幻想都无疑会被所有的懒散打败，就像所有在学校对工作的憧憬也迅速被每天平平淡淡的上下班所击破一样。
+
+最近情绪波动其实特别大，一个是因为听了一些比较感动的歌曲和故事，在还有就是看到了自己和身边很多刚毕业的同学们的一些近况，实在不能让人心情舒畅。但因为实在太懒，就没有很及时的记录下来。
+
+可能是由于刚换了一种生活方式吧，所有人都或多或少的需要一段的时间来整理一下自己的心情，用一个正确或者说是成熟一点的心态去面对自己新的这种生活，多年来的校园生活这下真的真的就说了再见， 而且又这么突兀、生硬的直接进入了工作岗位，这其中的一些慌张、恍惚、迷茫、胆怯、挫败可能只有刚毕业的我们这些小朋友们才能会有深切体会吧，最近听到了大概五六七八个同学都在工作方面遇到了比较不好的状况，无关乎能力，其实就是刚毕业的仓促感让人没有空隙去在很多的压力中去学会喘息，我们就这样匆匆忙忙的告别，然后很仓促的做了人生这个可能会比较重要的一个选择，距离答辩完已经过去了91天了，很久没有这种在短时间内涌出如此复杂的情绪，甚至已经超过了我可调节的范围。
+
+现在最希望的就是我那些可爱的朋友们，能够找到一个好的环境开始接下来的生活，并且多年后相见的时候，大家能够依然可以可爱。
+
+还有一段也想记录下来，是上周末我从深圳坐车去了东莞，因为在那里有我好两个个比较好的朋友，其中就有我大学室友(还没有这么给我麻哥想过一个称号，反正聊得特别好的一个朋友了)。他比我晚来几天这边，我是周六去的东莞，去的当天那边上午刚下过暴雨，我们在一段在坑坑洼洼都是水潭的路上碰面，破旧的东莞马路！（原谅我用了破旧，可是我去的那个地方给我的感觉就是这样。）让我美好的幻想一下破灭，不过这似乎也比较符合我们当下的心情。毕竟去之前我是想着看电影，吃烧烤，吃龙虾，在干点其他反正能让人放松的事情。当我们俩坐在桌子对面吃饭的时候，真的有一种感觉就是互相都不舍得说太多丧的话担心影响到对方的情绪，因为大家确实都感受到了这种未曾有过的惶恐，他经常跑去公司加班学东西，可能也是因为想多学一点、也可能是出租屋里太热。能做的只能是互相鼓励，或者是开玩笑，或者是其他....
+
+刚毕业的大家就是这样，我们都不知道自己适合去往哪里，一个个青涩的年轻人从大学的乐园里走出来，褪下了之前学校里各种颜色的保护壳，挤进了这个看起来混乱不堪的社会，在这个巨大的齿轮上各自找寻着自己感觉合适的位置，每个人心里都有着各自的酸楚，就这样吧，希望大家一切安好。
+</code></pre>
+
+<p>突然觉得那句祝“工作顺利”是一句多么有分量的话！​</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mddxz.cn/undefined/undefined.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MD小智">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="敬活着">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/undefined/undefined.html" class="post-title-link" itemprop="url">公众号软件分享链接</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-13 18:25:58" itemprop="dateCreated datePublished" datetime="2019-07-13T18:25:58Z">2019-07-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-23 16:50:14" itemprop="dateModified" datetime="2020-02-23T16:50:14Z">2020-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A6%8F%E5%88%A9/" itemprop="url" rel="index"><span itemprop="name">福利</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1>声明：</h1>
+
+<h2>从知乎、公众号过来的朋友，很抱歉因为不可抗拒的原因，无法继续提供更多的免费软件给大家，请大家支持正版。后续会分享一些自己的原创内容在公众号和知乎，敬请持续关注。</h2>
+
+<hr />
+
+<p>以下为之前分享的软件的下载地址，部分软件分享链接内含安装教程，其他请自行前往我的个人主页查看。</p>
+<ul>
+<li>
+1、Photoshop CC 2019【小智亲测】分享链接：
+链接：https://pan.baidu.com/s/1_m79ADgV1ecIzcF7eSzXXg 
+提取码：72kv 
+2、VEGAS15.0安装及破解【小智亲测】分享链接：
+链接：https://pan.baidu.com/s/1PApPIla_ncMm38tEpdh4dQ 
+提取码：5aej 
+3、屏幕录像专家【小智亲测】分享链接：
+链接：https://pan.baidu.com/s/1suTFpLIgLtEqOUldAVdvpA 
+提取码：jiib
+4、excel合并精灵【小智亲测，更多资源请关注公众号mddxz1995】分享链接：
+链接：https://pan.baidu.com/s/14lNQoJZhhV1haW5hRULX0w 
+提取码：2pfb 
+5、局域网代理软件ccproxy【小智亲测】分享链接：
+链接：https://pan.baidu.com/s/1Q4sSoJE_NBeJwkPMsMdsAA 
+提取码：t4b7 
+6、office2016软件及注册机【小智亲测】分享链接：
+链接：https://pan.baidu.com/s/1kB3WY6vOrJG6eWJ8zxbcJQ 
+提取码：rdg7 
+7、AE2018分享链接：
+链接：https://pan.baidu.com/s/1suRkZ6ni2vLWSZD0L_weEw 
+提取码：09za
+8、AE CC2019分享链接：
+链接：https://pan.baidu.com/s/1wJpdrdUMjkp_Bx4245Mh6A 
+提取码：urp5
+9.Premiere Pro CC2018分享链接：
+    链接：https://pan.baidu.com/s/1EAS5K7S25bX_Sv24I0fL_Q 
+    提取码：253r
+10、pandownload请去官网下载最新版：
+    https://pandownload.com/ （支持网页版、桌面版、安卓版）</li>
+</ul>
+
+<p><strong>微信个人订阅号：mddxz1995<br>知乎个人主页  ：<a href="https://www.zhihu.com/people/meng-dong-de-wu-zhi-25/posts" target="_blank" rel="noopener">https://www.zhihu.com/people/meng-dong-de-wu-zhi-25/posts</a></strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+  </div>
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MD小智</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:zhipeng2048@gmail.com" title="E-Mail → mailto:zhipeng2048@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/xiao_zhi1974" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;xiao_zhi1974" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MD小智</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
     </footer>
   </div>
-  
-</article>
-
 
   
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+<script src="/js/schemes/muse.js"></script>
 
-  
-    
 
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
-    </div>
-  </div>
+<script src="/js/next-boot.js"></script>
+
+
 
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/02/23/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 MD小智<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
 
 
   
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
   
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-  </div>
 </body>
 </html>
