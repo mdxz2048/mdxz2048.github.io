@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>远程桌面 on MD小智的分享</title>
-    <link>https://mdxz2048.github.io/tags/%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</link>
-    <description>Recent content in 远程桌面 on MD小智的分享</description>
+    <title>Posts on MD小智的分享</title>
+    <link>https://mdxz2048.github.io/posts/</link>
+    <description>Recent content in Posts on MD小智的分享</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 02 Jan 2019 17:02:25 +0800</lastBuildDate><atom:link href="https://mdxz2048.github.io/tags/%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Jan 2019 17:02:25 +0800</lastBuildDate><atom:link href="https://mdxz2048.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Windows远程桌面</title>
       <link>https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</link>

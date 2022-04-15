@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html
+  lang="zh-CN"
+  dir="ltr"
+  
+><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Windows远程桌面 | MD小智的分享</title>
+
+<meta name="generator" content="Hugo Eureka 0.9.1" />
+<link rel="stylesheet" href="https://mdxz2048.github.io/css/eureka.min.9cec6350e37e534b0338fa9a085bf06855de3b0f2dcf857e792e5e97b07ea905d4d5513db554cbc26a9c3da622bae92d.css">
+<script defer src="https://mdxz2048.github.io/js/eureka.min.f1639ee98d6cbd85b2b5f034d27320da962002ff83159ed4e01dbc5948c42a1ab26c2d6e74c66e93f5cec4d24dbd166d.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&amp;family=Noto&#43;Serif&#43;SC:wght@400;600;700&amp;display=swap"
+  as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+
+
+
+
+<script defer type="text/javascript" src="https://mdxz2048.github.io/js/fontawesome.min.1c5a4674b042785ed214cf0818a81724c6b37442fd61b0ed039237b93de25ed5103fc8079a05770648ccc9c66c4f540a.js"></script>
+
+
+
+
+
+
+
+<meta name="description"
+  content="软件名 rdpwrap
+安装平台 Windows
+功能介绍  本软件为开源软件，开源地址：   激活Windows自带的远程桌面，适用于家庭版等 实现多用户远程桌面  软件下载 比百度更快的网盘：因微信公众号平台限制，请在公众号后台回复关键字“rdpWrap”获取下载链接
+安装  解压压缩包后，右键以管理员身份运行install.bat执行安装脚本，然后关闭弹窗。安装成功效果如下：   右键以管理员身份运行RDPConf.exe，可以看到我这里的Windows系统版本显示不支持，没关系，这只是配置的问题，我们继续往下看。   先关掉RDPConf.exe的弹窗，在Windows桌面进行如下操作，关闭远程桌面服务。   按Win&#43;R按键，打开服务界面。   选中Remote Desktop Services，点击停止此服务；   其他   进入RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper，删除rdpwrap.ini配置文件，将我分享的配置文件放进来，分享的配置文件大小为179KB。   为了保险起见，我们直接进行一下升级。将我分享链接中的autoupdate.zip文件解压出来，将升级脚本放到RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper。右键以管理员身份运行。效果如图：   升级过程比较快，执行完之后，记得回到服务中，启动远程桌面服务，效果如图：   此时，再打开RDPConf.exe检查配置，可以看到之前红色部分的警告信息都没有了，我们的电脑就可以在局域网下访问远程桌面了，效果不要舒服。  使用  在桌面，搜索远程桌面；   输入被远程访问电脑的IP，登录账号、密码即可远程访问。 账号、密码为被访问电脑的用户：   可以在设置/账户/家庭和其他用户/将其他人添加到这台电脑进行 添加。 或者将被访问的电脑锁屏，然后用本地登录的账号密码进行登录   点击连接即可登陆。 碰到其他问题，可在公众号留言或去GitHub项目下查找解决方法。  ">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1 ,
+      "name":"Posts",
+      "item":"https://mdxz2048.github.io/posts/"},{
+      "@type": "ListItem",
+      "position": 2 ,
+      "name":"Windows远程桌面",
+      "item":"https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/"}]
+}
+</script>
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/"
+    },
+    "headline": "Windows远程桌面 | MD小智的分享","datePublished": "2019-01-02T17:02:25+08:00",
+    "dateModified": "2019-01-02T17:02:25+08:00",
+    "wordCount":  38 ,
+    "publisher": {
+        "@type": "Person",
+        "name": "MD小智的分享",
+        },
+    "description": "软件名 rdpwrap\n安装平台 Windows\n功能介绍  本软件为开源软件，开源地址：   激活Windows自带的远程桌面，适用于家庭版等 实现多用户远程桌面  软件下载 比百度更快的网盘：因微信公众号平台限制，请在公众号后台回复关键字“rdpWrap”获取下载链接\n安装  解压压缩包后，右键以管理员身份运行install.bat执行安装脚本，然后关闭弹窗。安装成功效果如下：   右键以管理员身份运行RDPConf.exe，可以看到我这里的Windows系统版本显示不支持，没关系，这只是配置的问题，我们继续往下看。   先关掉RDPConf.exe的弹窗，在Windows桌面进行如下操作，关闭远程桌面服务。   按Win\u002bR按键，打开服务界面。   选中Remote Desktop Services，点击停止此服务；   其他   进入RDP Wrapper安装目录，默认为C:\\Program Files\\RDP Wrapper，删除rdpwrap.ini配置文件，将我分享的配置文件放进来，分享的配置文件大小为179KB。   为了保险起见，我们直接进行一下升级。将我分享链接中的autoupdate.zip文件解压出来，将升级脚本放到RDP Wrapper安装目录，默认为C:\\Program Files\\RDP Wrapper。右键以管理员身份运行。效果如图：   升级过程比较快，执行完之后，记得回到服务中，启动远程桌面服务，效果如图：   此时，再打开RDPConf.exe检查配置，可以看到之前红色部分的警告信息都没有了，我们的电脑就可以在局域网下访问远程桌面了，效果不要舒服。  使用  在桌面，搜索远程桌面；   输入被远程访问电脑的IP，登录账号、密码即可远程访问。 账号、密码为被访问电脑的用户：   可以在设置\/账户\/家庭和其他用户\/将其他人添加到这台电脑进行 添加。 或者将被访问的电脑锁屏，然后用本地登录的账号密码进行登录   点击连接即可登陆。 碰到其他问题，可在公众号留言或去GitHub项目下查找解决方法。  "
+}
+</script><meta property="og:title" content="Windows远程桌面 | MD小智的分享" />
+<meta property="og:type" content="article" />
+
+
+
+<meta property="og:url" content="https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/" />
+
+
+
+
+<meta property="og:description" content="软件名 rdpwrap
+安装平台 Windows
+功能介绍  本软件为开源软件，开源地址：   激活Windows自带的远程桌面，适用于家庭版等 实现多用户远程桌面  软件下载 比百度更快的网盘：因微信公众号平台限制，请在公众号后台回复关键字“rdpWrap”获取下载链接
+安装  解压压缩包后，右键以管理员身份运行install.bat执行安装脚本，然后关闭弹窗。安装成功效果如下：   右键以管理员身份运行RDPConf.exe，可以看到我这里的Windows系统版本显示不支持，没关系，这只是配置的问题，我们继续往下看。   先关掉RDPConf.exe的弹窗，在Windows桌面进行如下操作，关闭远程桌面服务。   按Win&#43;R按键，打开服务界面。   选中Remote Desktop Services，点击停止此服务；   其他   进入RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper，删除rdpwrap.ini配置文件，将我分享的配置文件放进来，分享的配置文件大小为179KB。   为了保险起见，我们直接进行一下升级。将我分享链接中的autoupdate.zip文件解压出来，将升级脚本放到RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper。右键以管理员身份运行。效果如图：   升级过程比较快，执行完之后，记得回到服务中，启动远程桌面服务，效果如图：   此时，再打开RDPConf.exe检查配置，可以看到之前红色部分的警告信息都没有了，我们的电脑就可以在局域网下访问远程桌面了，效果不要舒服。  使用  在桌面，搜索远程桌面；   输入被远程访问电脑的IP，登录账号、密码即可远程访问。 账号、密码为被访问电脑的用户：   可以在设置/账户/家庭和其他用户/将其他人添加到这台电脑进行 添加。 或者将被访问的电脑锁屏，然后用本地登录的账号密码进行登录   点击连接即可登陆。 碰到其他问题，可在公众号留言或去GitHub项目下查找解决方法。  " />
+
+
+
+
+<meta property="og:locale" content="zh-CN" />
+
+
+
+
+<meta property="og:site_name" content="MD小智的分享" />
+
+
+
+
+
+
+<meta property="article:published_time" content="2019-01-02T17:02:25&#43;08:00" />
+
+
+<meta property="article:modified_time" content="2019-01-02T17:02:25&#43;08:00" />
+
+
+
+<meta property="article:section" content="posts" />
+
+
+<meta property="article:tag" content="远程桌面" />
+
+
+
+
+
+
+  <body class="flex min-h-screen flex-col">
+    <header
+      class="min-h-16 pl-scrollbar bg-secondary-bg fixed z-50 flex w-full items-center shadow-sm"
+    >
+      <div class="mx-auto w-full max-w-screen-xl"><script>
+    let storageColorScheme = localStorage.getItem("lightDarkMode")
+    if (((storageColorScheme == 'Auto' || storageColorScheme == null) && window.matchMedia("(prefers-color-scheme: dark)").matches) || storageColorScheme == "Dark") {
+        document.getElementsByTagName('html')[0].classList.add('dark')
+    }
+</script>
+<nav class="flex items-center justify-between flex-wrap px-4 py-4 md:py-0">
+    <a href="/" class="me-6 text-primary-text text-xl font-bold">MD小智的分享</a>
+    <button id="navbar-btn" class="md:hidden flex items-center px-3 py-2" aria-label="Open Navbar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="target"
+        class="hidden block md:flex md:grow md:justify-between md:items-center w-full md:w-auto text-primary-text z-20">
+        <div class="md:flex md:h-16 text-sm md:grow pb-4 md:pb-0 border-b md:border-b-0">
+        </div>
+
+        <div class="flex">
+            <div class="relative pt-4 md:pt-0">
+                <div class="cursor-pointer hover:text-eureka" id="lightDarkMode">
+                    <i class="fas fa-adjust"></i>
+                </div>
+                <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-30" id="is-open">
+                </div>
+                <div class="absolute flex flex-col start-0 md:start-auto end-auto md:end-0 hidden bg-secondary-bg w-48 rounded py-2 border border-tertiary-bg cursor-pointer z-40"
+                    id='lightDarkOptions'>
+                    <span class="px-4 py-1 hover:text-eureka" name="Light">Light</span>
+                    <span class="px-4 py-1 hover:text-eureka" name="Dark">Dark</span>
+                    <span class="px-4 py-1 hover:text-eureka" name="Auto">Auto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed hidden inset-0 opacity-0 h-full w-full cursor-default z-0" id="is-open-mobile">
+    </div>
+
+</nav>
+<script>
+    
+    let element = document.getElementById('lightDarkMode')
+    if (storageColorScheme == null || storageColorScheme == 'Auto') {
+        document.addEventListener('DOMContentLoaded', () => {
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener('change', switchDarkMode)
+        })
+    } else if (storageColorScheme == "Light") {
+        element.firstElementChild.classList.remove('fa-adjust')
+        element.firstElementChild.setAttribute("data-icon", 'sun')
+        element.firstElementChild.classList.add('fa-sun')
+    } else if (storageColorScheme == "Dark") {
+        element.firstElementChild.classList.remove('fa-adjust')
+        element.firstElementChild.setAttribute("data-icon", 'moon')
+        element.firstElementChild.classList.add('fa-moon')
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        getcolorscheme();
+        switchBurger();
+    });
+</script>
+</div>
+    </header>
+    <main class="grow pt-16">
+        <div class="pl-scrollbar">
+          <div class="mx-auto w-full max-w-screen-xl lg:px-4 xl:px-8">
+  
+  
+  <div class="grid grid-cols-2 gap-4 lg:grid-cols-8 lg:pt-12">
+    <div
+      class="lg:col-start-2 bg-secondary-bg col-span-2 rounded px-6 py-8 lg:col-span-6"
+    >
+      <article class="prose">
+  <h1 class="mb-4">Windows远程桌面</h1>
+
+  <div
+  class="text-tertiary-text not-prose mt-2 flex flex-row flex-wrap items-center"
+>
+  <div class="me-6 my-2">
+    <i class="fas fa-calendar me-1"></i>
+    <span
+      >2019-01-02</span
+    >
+  </div>
+  <div class="me-6 my-2">
+    <i class="fas fa-clock me-1"></i>
+    <span>1 min read</span>
+  </div>
+
+  
+    <div class="me-6 my-2">
+      <i class="fas fa-folder me-1"></i>
+      
+        <a href="https://mdxz2048.github.io/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" class="hover:text-eureka"
+          >工具教程</a
+        >
+      
+    </div>
+  
+
+  
+</div>
+
+
+  
+  
+
+  <h2 id="软件名"><strong>软件名</strong></h2>
+<p><a href="https://github.com/stascorp/rdpwrap">rdpwrap</a></p>
+<h2 id="安装平台"><strong>安装平台</strong></h2>
+<p>Windows</p>
+<h2 id="功能介绍"><strong>功能介绍</strong></h2>
+<ul>
+<li>本软件为开源软件，开源地址：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/v2-a68b6a5a5589f805ff9fad5383e68a86_180x120.jpg" alt="图标"></p>
+<ul>
+<li>激活Windows自带的远程桌面，适用于家庭版等</li>
+<li>实现多用户远程桌面</li>
+</ul>
+<h2 id="软件下载"><strong>软件下载</strong></h2>
+<p>比百度更快的网盘：因微信公众号平台限制，请在公众号后台回复关键字“<strong>rdpWrap</strong>”获取下载链接</p>
+<h2 id="安装"><strong>安装</strong></h2>
+<ol>
+<li>解压压缩包后，右键以管理员身份运行<strong>install.bat</strong>执行安装脚本，然后关闭弹窗。安装成功效果如下：</li>
+</ol>
+<p><img src="https://pic3.zhimg.com/v2-ffb63a3f32da022c2b9028566894963a_b.png" alt=""></p>
+<ol>
+<li>右键以管理员身份运行<strong>RDPConf.exe</strong>，可以看到我这里的Windows系统版本显示不支持，没关系，这只是配置的问题，我们继续往下看。</li>
+</ol>
+<p><img src="https://pic2.zhimg.com/v2-ec7a281e34a491b89ec8a6fa69402299_b.png" alt=""></p>
+<ol>
+<li>先关掉<strong>RDPConf.exe的弹窗</strong>，在Windows桌面进行如下操作，关闭远程桌面服务。</li>
+</ol>
+<ul>
+<li>按Win+R按键，打开服务界面。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/v2-ebd3ba4736212597f6baaec124468da9_b.png" alt=""></p>
+<ul>
+<li>选中<strong>Remote Desktop Services</strong>，点击<strong>停止此服务</strong>；</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/v2-9ebdb13a7148d627b9cd2aa91a6ca18f_b.png" alt=""></p>
+<ul>
+<li>其他</li>
+</ul>
+<ol>
+<li>进入RDP Wrapper安装目录，默认为<strong>C:\Program Files\RDP Wrapper</strong>，删除rdpwrap.ini配置文件，将我分享的配置文件放进来，分享的配置文件大小为179KB。</li>
+</ol>
+<p><img src="https://pic2.zhimg.com/v2-0ccaa81711f510c9db02d681caf05db9_b.png" alt=""></p>
+<ol>
+<li>为了保险起见，我们直接进行一下升级。将我分享链接中的<strong>autoupdate.zip</strong>文件解压出来，将升级脚本放到RDP Wrapper安装目录，默认为<strong>C:\Program Files\RDP Wrapper</strong>。右键以管理员身份运行。效果如图：</li>
+</ol>
+<p><img src="https://pic1.zhimg.com/v2-3ecef4349b39b64f1549fa9350cad3e8_b.png" alt=""></p>
+<ol>
+<li>升级过程比较快，执行完之后，记得回到服务中，启动远程桌面服务，效果如图：</li>
+</ol>
+<p><img src="https://pic4.zhimg.com/v2-61df3c18f1f74bd447539a3276a0e6ff_b.png" alt=""></p>
+<ol>
+<li>此时，再打开RDPConf.exe检查配置，可以看到之前红色部分的警告信息都没有了，我们的电脑就可以在局域网下访问远程桌面了，效果不要舒服。</li>
+</ol>
+<p><img src="https://pic2.zhimg.com/v2-2660fa686ef7cc9058398a043ed3f901_b.png" alt=""></p>
+<h2 id="使用"><strong>使用</strong></h2>
+<ol>
+<li>在桌面，搜索远程桌面；</li>
+</ol>
+<p><img src="https://pic2.zhimg.com/v2-e5570a643c09df86b4c1134970c2db89_b.png" alt=""></p>
+<ol>
+<li>输入被远程访问电脑的IP，登录账号、密码即可远程访问。 账号、密码为被访问电脑的用户：</li>
+</ol>
+<ul>
+<li>可以在<strong>设置/账户/家庭和其他用户/将其他人添加到这台电脑</strong>进行 添加。</li>
+<li>或者将被访问的电脑锁屏，然后用本地登录的账号密码进行登录</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/v2-4f89913ab376925632be5823a038f938_b.png" alt=""></p>
+<ol>
+<li>点击连接即可登陆。</li>
+<li>碰到其他问题，可在公众号留言或去GitHub项目下查找解决方法。</li>
+</ol>
+
+</article>
+
+
+      
+        <div class="my-4">
+    
+    <a href="https://mdxz2048.github.io/tags/%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/" class="inline-block bg-tertiary-bg text-sm rounded px-3 py-1 my-1 me-2 hover:text-eureka">#远程桌面</a>
+    
+</div>
+      
+
+      
+
+
+
+      
+
+      
+
+      
+
+
+
+    </div>
+    
+
+    
+    
+  </div>
+
+  
+
+          </div>
+        </div>
+      
+    </main>
+    <footer class="pl-scrollbar">
+      <div class="mx-auto w-full max-w-screen-xl"><div class="text-center p-6 pin-b">
+    <p class="text-sm text-tertiary-text"> Powered by the <a href="https://github.com/wangchucheng/hugo-eureka" class="hover:text-eureka">Eureka</a> theme for <a href="https://gohugo.io" class="hover:text-eureka">Hugo</a></p>
+</div></div>
+    </footer>
+  </body>
+</html>

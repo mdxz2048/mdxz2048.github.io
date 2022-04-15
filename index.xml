@@ -5,6 +5,19 @@
     <link>https://mdxz2048.github.io/</link>
     <description>Recent content on MD小智的分享</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language><atom:link href="https://mdxz2048.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 02 Jan 2019 17:02:25 +0800</lastBuildDate><atom:link href="https://mdxz2048.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Windows远程桌面</title>
+      <link>https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</link>
+      <pubDate>Wed, 02 Jan 2019 17:02:25 +0800</pubDate>
+      
+      <guid>https://mdxz2048.github.io/posts/windows%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2/</guid>
+      <description>软件名 rdpwrap
+安装平台 Windows
+功能介绍  本软件为开源软件，开源地址：   激活Windows自带的远程桌面，适用于家庭版等 实现多用户远程桌面  软件下载 比百度更快的网盘：因微信公众号平台限制，请在公众号后台回复关键字“rdpWrap”获取下载链接
+安装  解压压缩包后，右键以管理员身份运行install.bat执行安装脚本，然后关闭弹窗。安装成功效果如下：   右键以管理员身份运行RDPConf.exe，可以看到我这里的Windows系统版本显示不支持，没关系，这只是配置的问题，我们继续往下看。   先关掉RDPConf.exe的弹窗，在Windows桌面进行如下操作，关闭远程桌面服务。   按Win+R按键，打开服务界面。   选中Remote Desktop Services，点击停止此服务；   其他   进入RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper，删除rdpwrap.ini配置文件，将我分享的配置文件放进来，分享的配置文件大小为179KB。   为了保险起见，我们直接进行一下升级。将我分享链接中的autoupdate.zip文件解压出来，将升级脚本放到RDP Wrapper安装目录，默认为C:\Program Files\RDP Wrapper。右键以管理员身份运行。效果如图：   升级过程比较快，执行完之后，记得回到服务中，启动远程桌面服务，效果如图：   此时，再打开RDPConf.exe检查配置，可以看到之前红色部分的警告信息都没有了，我们的电脑就可以在局域网下访问远程桌面了，效果不要舒服。  使用  在桌面，搜索远程桌面；   输入被远程访问电脑的IP，登录账号、密码即可远程访问。 账号、密码为被访问电脑的用户：   可以在设置/账户/家庭和其他用户/将其他人添加到这台电脑进行 添加。 或者将被访问的电脑锁屏，然后用本地登录的账号密码进行登录   点击连接即可登陆。 碰到其他问题，可在公众号留言或去GitHub项目下查找解决方法。  </description>
+    </item>
+    
   </channel>
 </rss>
