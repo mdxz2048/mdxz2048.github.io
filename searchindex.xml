@@ -1,4 +1,134 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>关于我</title><url>https://mdxz2048.github.io/about.html</url><categories/><tags/><content type="html"> 警惕三种怪癖 第一种怪癖：我们对已经拥有的东西迷恋到不能自拔。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>在Linux上安装ResilioSync</title><url>https://mdxz2048.github.io/post/installresiliosynconlinux/</url><categories><category>工具教程</category></categories><tags><tag>ResilioSync</tag><tag>文件同步</tag></tags><content type="html"> 本文主要介绍如何在Linux上安装ResilioSync。
+我日常主要使用3台Windows电脑。3台都安装ResilioSync软件，用来同步特定的文件夹。目前的主要问题是，需要其中至少有1台电脑保持开机并联网，才可以在另外一台电脑上同步之前的文件。因此，决定将树莓派装上ResilioSync软件，加入到我这个P2P网络中来，作为那个一直开机的设备。
+准备工作 树莓派3B+ SD卡8GB+ SD卡烧录器 其他 使用说明 树莓派系统安装 这里我使用的Linux发行版本是Ubuntu Server 20.04.4 LTS。 使用balenaEtcher或者其他烧录软件将下载的系统镜像解压到SD卡中，这里网上教程很多，大家不清楚的可以搜一下； 部署ResilioSync 下载安装 在这里下载的版本是armhf架构 ResilioSync；
+执行如下指令进行安装，安装是自动完成，这里等待即可；
+sudo dpkg -i resilio-sync_2.7.2.1375-1_arm64.deb 配置激活 这里使用网页(树莓派IP:8888/gui)进行配置，首次进入时会提示需要设置一个网页登陆的账号、密码，这里根据需要设置即可；
+我这里配置完成后，进入网页长这样；
+配置完成后，我们把对应的License文件存放到设备上，加入我这里放在目录 /home/ubuntu/rs/ResilioSyncPro.btskey;
+回到网页，在右上角点击 Preference，进入 License页面，点击 Apply License,将存放license的文件添加进来；
+License激活完成后，界面长这样；
+接下来就可以像在客户端上一样，在网页开始同步文件了；</content></entry><entry><title>设备间文件自动同步软件---Reaillio</title><url>https://mdxz2048.github.io/post/soft_win_reaillio/</url><categories><category>软件分享</category></categories><tags><tag>文件同步</tag></tags><content type="html"> 软件名称 Resilio Sync 网址：https://www.resilio.com/individuals/
+功能介绍 Resilio Sync是一款电脑间自动同步文件夹的软件。
+支持局域网同步，同时支持跨网络同步 不需要第三方服务器，几乎不受存储空间和流量限制 支持多人同时同步(越多人对文件夹进行同步，则同步速度越快) 数据私有/安全性，因为数据不在云端，而是存储在本地 首页展示 使用说明 安装 前往官网下载对应平台版本(支持win、Linux、mac)，Windows版本点击这里；
+下载完成后，点击安装即可，只需要在这里填写计算机名称，以便在2台计算机之间同步时快速识别；
+[image.png(https://inews.gtimg.com/newsapp_ls/0/14526417392/0.jiketuchuang.png)
+点击入门后即可进入软件，点击左上角➕选择对应文件夹开始共享，随即会在主界面出现共享按钮；
+主机点击共享后，会弹出如下界面，复制链接在另一台安装了Resilio Sync软件的电脑上打开即可自动同步；
+到这儿，就完成了两台设备之间的文件夹自动同步。
+pro版本的激活下载链接。</content></entry><entry><title>pdf格式文档在线转换</title><url>https://mdxz2048.github.io/post/soft_web_ilovepdf/</url><categories><category>软件分享</category></categories><tags><tag>PDF转换</tag></tags><content type="html"> 软件名称 ilovepdf是一个免费的PDF在线转换网站。
+同时可提供付费的OCR(光学字符识别 )服务。
+网址：https://www.ilovepdf.com
+中文：https://www.ilovepdf.com/zh-cn
+功能介绍 合并PDF
+拆分PDF
+压缩PDF
+PDF格式转换为 Word、PPT、Excel格式，其中OCR功能为付费功能
+Word、PPT、Excel转换至PDF
+PDF加密、解锁、修复、签名等功能
+首页展示 使用说明 在线工具的使用往往都比较简单直接，这里以一篇PDF格式的论文转换为Word文档为例，演示网站的使用。
+注意：在PDF格式转换为其他格式时，如果PDF格式的文档是类似于**拍照/扫描出的PDF格式，一般需要用到OCR识别技术，即通过算法识别文本内容，类似于锤子的大爆炸，或者IOS15新推出的相机文字识别**技术。
+在首页点击[PDF to Word]
+在弹出的页面点击[Select PDF file]，选择一个PDF文件，例如我这里选择了之前下载的一篇论文《基于BDS的RTK模式定位精度分析_杨泰朋》。
+这里我不需要OCR，选择[NO OCR]，然后点击[Convert to WORD]按钮即可。 转换完成后，会弹出下载按钮，点击[Download WORD]即可。</content></entry><entry><title>一款Markdown编辑软件-Mark Text</title><url>https://mdxz2048.github.io/post/soft_win_marktext/</url><categories><category>软件分享</category></categories><tags><tag>markdown</tag><tag>marktext</tag></tags><content type="html"> 软件名称 [marktext]()是一款简单、实时预览的markdown编辑器，是一款优秀的开源软件。
+功能介绍 markdown常见语法
+markdown扩展语法、数学表达式(KaTeX)、表情
+支持导出HTML和PDF格式文档
+更换主题
+直接从剪切板粘贴图像
+自动上传图片至图床
+主题展示 使用说明 软件的安装，直接从github下载即可，我这里也上传一份，防止大家网络问题无法下载，在公众号后台回复“mark-text”即可获取下载链接。
+图床，使用图床的配置需要先选择一个图床，默认可使用SM.MS免费图床。可可以参考这里设置，使用GitHub仓库作为图床。(由于网络原因，我这里上传图片一直失败，所以用了chrome插件即刻图床来上传，非常好用)
+其他地方没有特殊设置，在使用过程中发现有软件闪烁的现象，不过影响使用。这篇推送就是用mark-text编辑的，能不能作为长期markdown编辑器，还有待考验。</content></entry><entry><title>公众号分享的一些软件</title><url>https://mdxz2048.github.io/post/soft_wechat_shares/</url><categories><category>软件分享</category></categories><tags><tag>公众号分享</tag></tags><content type="html"> 由于公众号后台自动回复频繁被删除，特将2021年以前分享过的一些下载链接同步至此，如下：
+Photoshop CC 2019【小智亲测】 链接 提取码：72kv VEGAS15.0安装及破解【小智亲测】 链接 提取码：5aej 屏幕录像专家【小智亲测】 链接 提取码：jiib excel合并精灵【小智亲测，更多资源请关注公众号mddxz1995】 链接 提取码：2pfb 局域网代理软件ccproxy【小智亲测】分享链接： 链接 提取码：t4b7 office2016软件及注册机【小智亲测】分享链接： 链接 提取码：rdg7 AE2018分享链接： 链接 提取码：09za AE CC2019分享链接： 链接 提取码：urp5` Premiere Pro CC2018分享链接： 链接 提取码：253r pandownload请去官网下载最新版： https://pandownload.com http://www.mddxz.top/?p=127 树莓派安装nextcloud+内网穿透 链接 提取码: i2vr</content></entry><entry><title>谷歌搜索镜像网站</title><url>https://mdxz2048.github.io/post/soft_web_googlemirrorsites/</url><categories><category>软件分享</category></categories><tags><tag>谷歌搜索</tag></tags><content type="html"> 软件介绍 分享一个由浙江大学维护的Google搜索的公益镜像网站，供大家在网络不佳的情况下使用，有条件的同学就不要使用镜像网站了，自己直接访问即可。
+Google搜索的优势和一些常用搜索技巧在我之前的一篇《学会使用高级搜索命令，提高搜索引擎使用效率》教程中有过介绍，我自己一般会使用Google和Bing两个搜索引擎，一般只有在网络不佳的情况下使用Bing。
+使用方法 浏览器输入地址:https://g.luciaz.me/
+这时候会有一个验证页面，验证你是否来自浙江大学，这里三个问题的答案分别是：
+心灵之约、水朝夕、csxy@123
+填入任何一个问题的答案，点击提交，会自动跳转至搜索页面。直接使用即可：</content></entry><entry><title>如何安装正版的WIN10</title><url>https://mdxz2048.github.io/post/installgenuinewin10/</url><categories><category>工具教程</category></categories><tags><tag>Windows10</tag></tags><content type="html"> 声明 本文档首发在我的个人公众号。
+文档说明 以联想威6pro为例，使用微软官方工具，安装正版Windows10操作系统。
+工具说明 U盘(8GB及以上、会被格式化) Windows电脑(可以上网) 使用说明 本次安装主要分为三个步骤
+这一步由工具自动完成，通过下载微软的官方工具，将U盘制作成启动盘并下载win10进U盘； 插上U盘到待安装系统的笔记本(或主机)，进入BIOS将其设置为使用U盘启动； 等待自动安装(需要至少20分钟)； 注册激活，注意安装时不分是家庭版、专业版还是企业版，由最后安装完成后的激活码决定。 教程 将U盘插入可以上网的Windows电脑，打开资源管理器(win+E)查看盘符，检查是否插入，如下图，我这里是盘符是****I。 打开浏览器，进入win10的下载界面(https://www.microsoft.com/zh-cn/software-download/windows10)，点击立即下载工具，下载完成后，打开工具。点击接受/同意协议，出现如下界面时，选择为另一台电脑创建安装介质(U盘、DVD或ISO文件)，点击下一步。 在选择版本这里保持默认即可，点击下一步。需要安装其他版本的windows10，取消下图中红框的勾选即可选择。 选择介质，意思就是想用什么来装系统，我们这里当然选择U盘，然后下一步。 选择U盘，这里可以看到你电脑上插入的所有U盘，务必选择你要用来装系统的那个U盘。这个****U盘会被格式化，文件要提前备份好。确认好就可以点击下一步啦。 接下来就软件就会自动运行，会自动制作启动盘、下载windows10到系统。这个过程比较慢，基本上需要多等个1、2个小时，主要看网速和微软服务器给不给力了。 待安装系统的电脑完全关机，将U盘插入。 这里需要将电脑设置成从U盘启动，因为你启动了要让这个U盘给你装系统，所以需要一点设置。我们是通过设置电脑的BIOS，让系统启动后从U盘加载。这里我们以联想威6pro为例，给大家演示如果查看自己的电脑设置U盘启动 查看自己的电脑型号，这个通过电脑上的标签、查看之前买的订单基本都可以找得到。然后我查到公司这台笔记本是联想的威6pro，除了长得丑点外观也还可以； **找到电脑型号后，用搜索引擎(Google搜索、百度一下这种就叫搜索引擎)搜“**电脑型号+如何设置U盘启动”，然后在搜索结果中的方法中尝试一下，一般就可以找到答案，如果找不到，就先查怎么进入BIOS，然后进入后看下一步教程。一般情况同一品牌(实际是同一主板)进入BISO方法都是一样的，所有的BIOS也大同小异(因为会写这个软件的工程师比较少、太底层了)。 一般设置方法分3步： 进入BIOS，比如我这台电脑就是开机按住Fn+F2；
+关闭安全启动；
+选择U盘启动(注意这里需要插上U盘)，然后保存并退出。
+退出BIOS后电脑会自己进入U盘启动。这里我们只需要按确定/下一步就好啦，能到这里，基本上系统安装已经成功了一半了，接下来就可以喝杯水休息一下。 等待安装完成后，购买密钥激活即可。
+至此，正版的Windows10系统安装完成。</content></entry><entry><title>IOS设备使用系统自带Airplay投屏到电脑</title><url>https://mdxz2048.github.io/post/soft_win_deeprd/</url><categories><category>软件分享</category></categories><tags><tag>投屏</tag></tags><content type="html"> 软件 蓝莓投屏
+介绍 iOS和MacOS里, 使用Airplay协议, 无需安装软件, 直接镜像投屏. 安卓和Windows安装蓝莓研发的投屏发送端, 可用投屏码 一键投屏到对应接收端. 支持同时镜像电脑屏幕到多个接收端, 接收端也可以同时显示多路屏幕, 即支持一投多和多投一, 适合会议办公, PPT演示
+本次主要介绍IOS设备投屏到电脑，安卓设备和win10系统使用系统自带无线显示可完成投屏。
+软件下载 官网下载：http://deeprd.com
+或公众号后台回复：“手机投屏”获取软件安装包
+使用教程 打开获取到的软件安装包，解压安装包，效果如图所示。 双击“Blueberry-Airplay.exe”，软件会自动运行。此时可以在状态栏看到软件，效果如图所示。 保证IOS设备和PC机处于同一局域网下(连接同一WiFi)
+打开IOS设备屏幕镜像，可以看到PC机，iPhone投屏后效果如图。
+ipad投屏后效果如图。</content></entry><entry><title>GitHub+hexo搭建个人博客</title><url>https://mdxz2048.github.io/post/build-blog-with-hexo/</url><categories><category>工具教程</category></categories><tags><tag>hexo</tag><tag>搭建博客</tag></tags><content type="html"> 声明 本内容非原创，主要参考该博客进行验证 http://dwz.date/buw2dwz.date
+感谢GitHub提供的开源服务。 感谢Hexo提供的方案。官网： https://hexo.io/hexo.io
+介绍 今天介绍使用GitHub+hexo博客框架搭建个人博客的方案。优点是****完全免费、自由，缺点是只能使用静态页面展示，使用评论、上传图片其他功能时需要配合其他插件服务使用。
+参考本教程，大约需要半个小时来完成安装和使用。其他高级操作需读者自行搜索教程学习。
+安装Node.s和Git终端 安装Node.js，如图下载LTS版本安装包进行下载，然后像正常安装软件一样进行安装即可。下载地址https://nodejs.org/en/ **安装成功后，如图，在windows终端下输入如下指令查看是否安装成功，如下出现版本号即安装成功。**搜索cmd(命令提示符)可进入windows终端。  node -v 安装git，点击gitWindows客户端进行下载，下载完成后像安装正常软件一样进行安装即可。 如果没有GitHub账号，请查看此教程进行注册。注册GitHub账号 创建Github Pages(博客存放仓库) 打开浏览器，进入GitHub官网，登录自己的账号。 点击头像，查看自己的****username，我的用户名为mdxz2048 点击右上角加号，在下拉选项中选择****New repository创建博客仓库。 在弹出的设置页面Repository name处填写****yourusername.github.io，然后其他配置保持默认，点击Create repository。例如我的用户名为mdxz2048，就填mdxz2048.github.io。 接下来GitHub会将该仓库设为Github Pages，以后访问该域名就可以访问到该仓库的内容，我们要搭建的博客随后会被放在这里。 配置GitHub 在桌面右键鼠标，点击****git bash here进入git终端。 在终端输入如下指令，连接GitHub与本地。  git config --global user.name "mdxz2848"  git config --global user.email "zhipeng2048@gmail.com" 生成SSH key密钥。执行如下指令，然后，在C:*Users**ASUS.ssh目录会有两个文件id_**rsa和**id_rsa.pub*,打开**id_rsa.pub**，复制里面的所有内容到 SSH keys这里 的Key，Title随便填，然后Add SSH key就可以了。  ssh-keygen -t rsa -C "zhipeng2048@gmail.com" 安装hexo 首页进入任意磁盘创建文件夹，这里文件夹命名为blog,在该文件夹下鼠标右键选择Git Bash Here，执行命令：  npm install -g hexo-cli 接着执行如下指令  hexo init  npm install 新建完成后，指定文件夹的目录如下：  _config.yml 部署 在_config.yml文件，找到deploy，进行以下配置：  deploy:  type: git  repo: https://github.com/mdxz2048/mdxz2048.github.io.git  branch: master 安装部署工具，执行如下指令。  npm install hexo-deployer-git --save 使用next主题美化 在blog文件夹下鼠标右键选择Git Bash Here，然后clone next主题：  git clone https://github.com/theme-next/hexo-theme-next themes/next 更新主题NexT：  cd themes/next  git pull 切换成NexT主题，在blog根文件夹下，修改_config.yml文件中的theme：  Extensions  Plugins: https://hexo.io/plugins/  Themes: https://hexo.io/themes/  theme: next 切换后，执行如下指令清理缓存。  hexo clean 执行如下指令，查看本地部署效果。  hexo s 浏览器打开http://localhost:4000/可以看到本地部署效果。 可以文末下载我的博客配置和主题配置文件，根据自己的需求进行修改。 新建一篇文章 执行如下指令新建一个.md的文件，然后在对应路径下打开编辑。
+ hexo new 文章名 执行如下指令进行部署  hexo g //生成网页文件  hexo s //localhost:4000本地预览效果  hexo d //部署 在https://mdxz2048.github.io/查看部署效果。 文中提到的软件和配置文件均可在此下载：
+ 链接: https://pan.baidu.com/s/1Nw-ApHdYZkqXj65h7T7qew  提取码: ssgt</content></entry><entry><title>使用树莓派部署个人网盘</title><url>https://mdxz2048.github.io/post/how-to-install-nextcloud-on-raspberry-3b+/</url><categories><category>工具教程</category></categories><tags><tag>树莓派3B+</tag><tag>nextcloud</tag></tags><content type="html"> 效果展示 准备工作 硬件：树莓派3B+、SD卡、SD卡读卡器、网线
+软件：所有需要的软件点击此处下载
+提取码: hv1b
+(链接失效后可在我的公众号mddxz1995后台回复个人网盘获取最新链接)。
+其他环境：公网IP
+(若只作为局域网访问则不需要公网IP。公网IP是为了让我们的网盘可以通过外网进行访问，此处以一台阿里云作为代理服务端来演示)
+搭建方案 使用开源应用nextcloud在树莓派3B+搭建网盘(也支持其他树莓派型号)实现文件的存储。优点是是支持Android、IOS设备客户端和web端访问，日常使用比较方便。 使用开源应用frp实现内网穿透的反向代理，具体是在一台有公网IP的设备上运行frp服务端，在客户端(这里指树莓派)上运行客户端，外网访问时通过服务端作为代理访问树莓派。优点是支持 tcp, udp 协议，适配了 http 和 https 应用协议，也就是可以更好的通过远程访问我们的网盘内容。 安装镜像 Next cloud提供了树莓派专用的系统镜像，我们可以从官网下载安装，同时也可以在我提供的文件中找到镜像直接安装使用。
+将下载完成的镜像解压，解压后效果如图所示。(解压软件在软件及教程\解压缩软件中提供) 将SD读卡器插入电脑，打开Win32DiskImager镜像安装软件，(在软件及教程\镜像写入工具中提供) ，点击此按钮选择上一步解压出来的文件。 在设备栏选择SD卡，我这里选择H盘，选择完效果如图所示。 点击下方写入，然后等待写入完成。 等待进度条完成后，会提示写入成功。此处需要注意若电脑提示要格式化磁盘一定不要格式化。 此时SD卡被分成两个盘。为了稍后使用SSH远程登录树莓派控制台，在资源管理器中进入SD卡boot盘，右键新建/文本文档，新建一个文件名为SSH的空文档，同时删除掉文件后缀名，效果如图所示。 将SD卡插入树莓派等待启动，上电前我们将树莓派通过网线接在路由器的lan口。 等待约十分钟左右，这个时间刚好可以在刺激战场中玩一把团队竞技。 打开路由器的后台，查看树莓派的IP。 打开shell工具，点击文件/新建，协议选择SSH，主机填写树莓派IP地址，端口选择22，然后点击连接(工具在软件及教程\Xshell 、Xftp 6中提供)。 输入默认账号密码，登入控制台，登陆成功后界面如下，也可以根据提示升级新版的nextcloud。 账号：pi
+密码：raspberry
+打开浏览器，输入树莓派IP，此时可以看到next cloud已经开始运行，这里务必保存好NextCloudPi和NextCloud的账号密码，然后点击下方的Activate。 在弹窗中输入NextCloudPi(也就是第一个)的账号密码，然后点击登录。 如果安装了U盘，第一次运行会提示格式化U盘，也可以选择跳过。 External access栏选择No，然后跳到最后一步就可以开始使用了。 在浏览器地址栏输入树莓派IP，就进入了登陆界面，使用第二个密码登录。 如果看到如下界面就说明已经初始化成功了，此时网盘已经可以在局域网内正常使用，可在apple store和安卓应用市场搜索nextcloud下载对应终端的APP。 Frp反向代理 Frp是一款开源的反向代理软件，我们通过在阿里服务器上运行frp服务端，在树莓派上运行客户端与服务端进行连接。这样我们可以通过服务端作为代理，转发我们对树莓派的请求，以达到外网访问树莓派的目的。这里我主要参考了《FRP中文文档》和《使用frp进行内网穿透》这两篇文档。
+服务端配置 在阿里后台实例/安全组 规则添加入方向端口，比如我这里添加7500/7500、7001/7001、7600/7600三个端口分别用来作为frp的服务端管理界面的访问端口、树莓派SSH连接映射端口和树莓派网盘访问端口，配置界面如图所示。 打开xshell客户端，进入阿里服务器的控制台。 执行arch如下指令，查看服务器机器架构，我的服务器是X86_64。 root@iZ2ze68uznd431fxfr63d2Z:~# arch
+x86_64
+下载对应的frp软件，因为GitHub国内访问速度过慢，我这里已经将服务端的软件上传至软件及教程\frp\服务端(X86_64)，随后通过ftp客户端传至设备即可，和我设备架构相同的同学可以直接使用我提供的软件，其他架构可在frp官方下载界面下载对应的软件（ftp客户端软件在软件及教程\Xshell 、Xftp 6提供）。 打开ftp软件，连接至服务器控制台，将frp服务端软件拖到服务器Dowoload目录下。 通过Xshell连接服务器后台，进入frp服务端软件的存放目录，执行如下命令，解压。 cd Download/ sudo tar -zxvf frp_0.32.0_linux_amd64.tar.gz 执行如下命令，给文件夹改个名，方便使用。 cp -r frp_0.32.0_linux_amd64 frp 执行如下命令，编辑frp的配置文件。 cd frp sudo vim frps.ini 我的服务端配置内容如下： [common] bind_port = 7000#与树莓派绑定的端口 dashboard_port = 7500#frp服务端软件运行信息展示端口 token = 12345678#树莓派与服务端的登陆口令 dashboard_user = admin#frp服务端软件运行信息展示的访问账号 dashboard_pwd = admin#frp服务端软件运行信息展示的访问密码 vhost_http_port = 10080#此处没有使用，我也没弄明白 vhost_https_port = 10443#此处没有使用，我也没弄明白
+退出并保存，执行如下指令，运行frp服务端。 ./frps -c frps.ini 此时通过服务器IP:7500就可以看到frp服务端的展示信息，效果如图所示。 再执行如下指令将其运行在后台。 nohup ./frps -c frps.ini &amp; 至此，服务端已经配置完成。 客户端配置 树莓派是armv7架构，将对应的frp软件通过ftp软件拷贝到树莓派的指定目录下。 进入对应目录，和服务端操作类似，解压、重命名。 cd ~/ tar -zxvf frp_0.32.0_linux_arm.tar.gz cp -r frp_0.32.0_linux_arm frp 执行如下指令，编辑客户端配置。 sudo apt-get install vim [common] server_addr = x.x.x.x #这里填服务器IP server_port = 7000 #这里填写服务器配置中的bind_port token = 12345678 #登录口令 [smb] type = tcp local_ip = 127.0.0.1 local_port = 443 remote_port = 7600 [SSH] type = tcp local_ip = 127.0.0.1 local_port = 22 remote_port = 6000
+执行如下指令，运行客户端。 ./frpc -c frpc.ini 输出如下内容，则客户端和服务端绑定成功。 2020/03/21 09:05:14 [I] [service.go:257] [f499bd2db389d748] login to server success, get run id [f499bd2db389d748], server udp port [0] 2020/03/21 09:05:14 [I] [proxy_manager.go:144] [f499bd2db389d748] proxy added: [smb SSH] 2020/03/21 09:05:14 [I] [control.go:179] [f499bd2db389d748] [smb] start proxy success 2020/03/21 09:05:14 [I] [control.go:179] [f499bd2db389d748] [SSH] start proxy success
+此时在浏览器地址栏输入服务器IP:7600即可访问树莓派。 出现以上弹窗则说明已经成功访问了树莓派，只是由于next cloud的配置，限制了服务器的IP访问，此时，我们进入next cloud的配置文件，将服务器IP添加进去，然后退出保存。效果如图所示。 sudo vim /var/www/nextcloud/config/config.php 重新运行frp客户端在后台，成功后此时可通过外网进行访问。 nohup ./frpc -c frpc.ini &amp; 特别感谢
+感谢next cloud、frp团队开源分享
+https://github.com/fatedier/frp https://nextcloud.com/
+参考文档
+使用frp进行内网穿透</content></entry><entry><title>一个理工科本科毕业生的就业经历分享</title><url>https://mdxz2048.github.io/post/how-to-find-a-job/</url><categories><category>工具教程</category></categories><tags><tag>应届生</tag><tag>找工作</tag></tags><content type="html"> 如果你有兴趣打开了这篇文档，我大概可以相信你现在也是处于大四刚开始找工作的阶段，写这篇文档是因为最近身边有一些学弟学妹来问我关于找工作的事情，就正好利用周末一点时间结合自己参加校招和社招的经历，分享一点点经验给大家。有一点要说明的是，作为我个人的一些经验分享，并不一定适用于当下找工作的形势与政策，也一定不是适用于每个人，但是对于正在或者即将面临毕业的你，我相信或多或少的会有一些有参考价值。
+我是自动化专业19届本科生，现在在深圳从事嵌入式计算机行业，毕业前掌握一些单片机和嵌入式linux方面的知识，有一定的C语言基础，另外还有一些实际的学生项目经验，所以我以下的分享可能更适用于有一点技术但是没有选择考研的同学作为参考。
+以下我按照我找工作的安排顺序，分为校招、和社招两部分来给大家分享：
+校招： 首先是关于招聘会的选择，一开始我就比较重视也算积极的参加了校招，我是在秋季学期的9月和10中旬一共参加了两次。因为考虑毕业后打算去北京，所以当时我选择了在西安一些高校参加校招(之所以没有选择北京完全是因为我对西安更加熟悉一些)
+宣讲会信息的整理，参加校招需要提前了解各个学校的宣讲会信息，提前安排好行程，每个学校的校招信息在各个学校的就业信息服务网站中的宣讲会模块都会有，为了保证信息的准确性和实时性建议大家去各高校的官网去看，我会将网址附在文末。为了自己少跑一些路，我将每天的招聘信息按照各个校区(一定注意是校区，有一些学校两个校区之间可能隔两三小时车程)进行分类整理，然后再将同一时间段内(一般就是一个上午或者下午)自己想要参加的招聘信息放在一起，当时是做了表格方便自己随时查看。
+其次是校招过程自己总结出的一些经验：
+(1)因为很多一场招聘会的时间都在1-2个小时，所以基本上同一间教室一个时间段内一般只有2-3个宣讲会，所以可能你在这所学校感兴趣的两个宣讲会会同时在同一个时间进行宣讲，所以为了应对这种问题建议不是在本校找工作的同学尽量结伴。
+(2)关于简历的制作技巧就不在这里说了，在职位这一块我建议写成就业方向，然后选择一两个从事的方向去写，因为每个企业对岗位的叫法不一样，到时候可以在简历明显的位置用笔写上岗位就可以，这里也避免了让人事小姐姐懵O。
+(3)校招的流程一般不确定，笔试、面试一般都或前或后的都有可能(如果你有机会参加的话)，这个时间也很不确定，有的是当场进行，有的是电话通知，一般这个就听安排然后按照自己的选择进行安排就行。面试也主要是问一些简历和专业方面的问题，大部分都比较基础。
+社招： 对于社招，我首先想抛出我的一个观点：对于第一份工作，企业给你的成长空间比待遇会更重要一些，应当在想要从事的行业去尽可能找一些更大的平台去提升自己。(当然这个目标是在待遇能满足你正常生活的前提下，毕竟这是一件长期的事情，总得每天开开心心的去工作)
+社招的准备：
+(1)简历一般建议多打印几份，普通黑白打印即可，基本上每家去之前都要求带简历。
+(2)行程安排我这次主要使用手机的日历功能，手机会会提前提醒，也是方便安排行程。
+(3)基本上大的企业面试都是一些基础的问题，我自己是做软件，做的面试题也基本是一些C语言(主要是指针、内存、常用接口、链表&hellip;)相关和三电起的基础；问题也主要是针对简历上所写的来问，基本上只要是自己做的东西一般也不会被问住。
+公司的选择：
+我有在北京一家公司待过一段时间，公司主要研发港口自动化方面的系统，规模在一百人左右，其实规模已经不是特别小了，虽然进去也是研发岗位，但是由于一些管理制度上的不完善，导致工作体验比较差，可见范围内也不能很好的提升自己，因此我选择了在答辩完后去深圳找工作，大概是在校运会的那一周我在深圳参加面试，相对来说深圳研发环境比北京好一些，所以我也是很快在深圳找到了工作，但是北方的同学来深圳一定得考虑好南北气候的差异是不是能接受。
+另外，如果是做技术方面的同学，尽可能去争取研发岗位，哪怕刚进去是在研发岗干的是助理的活。岗位不一样想转岗难度一般会比较大，除非你是特别优秀或者选择跳槽。
+平台的选择：
+我一共用了三家招聘平台的APP：BOOS直聘、前程无忧(51Job)、智联直聘，现在看来后两家企业的回复会多一些，boos直聘更多的是企业主动联系你让你发简历。
+写在最后： 现在正处于九月中旬，也就是秋招刚刚开始的阶段，大家完全有时间去多参加一些面试，无论是否成功给自己积累一下经验总不是件坏事。作为本科毕业生想要从事技术领域相关工作，更多的还是要真正学到一些知识、技能，这也是你找工作的资本。如果你到现在还是一张白纸什么也不会，那么以上的内容可能并不适用。
+最后，真诚的希望各位能够珍惜大学最后的这段时光，尽可能到处走走，多和朋友、老师在一起聚一聚。
+个人水平有限，小小的分享只希望能够帮到一二就相当满足了，仅作为参考，不建议生搬硬套。
+以下是我之前整理的一些高校的就业信息网站，基本上在百度搜索“高校+就业”就会跳出来。
+北方民族大学： http://jyc.nun.edu.cn/module/careers?menu_id=6598
+西安理工大学： http://job.xaut.edu.cn/website/index.aspx
+长安大学： http://jyzx.chd.edu.cn/
+西电： http://job.xidian.edu.cn/Special/Index/100021/0
+西安邮电： http://jiuye.xupt.edu.cn/
+……</content></entry><entry><title>学会使用高级搜索命令，提高搜索引擎使用效率</title><url>https://mdxz2048.github.io/post/google-search-skills/</url><categories><category>工具教程</category></categories><tags><tag>搜索技巧</tag></tags><content type="html"> 如今国内搜索引擎市场经过多年来的发展也已经完成了洗牌。根据 据析趣知 提供的数据，百度搜索无疑是国内引擎竞争中的最大赢家，虽然它有很多让我们诟病的缺点，但我们大部分人还不得不边骂边从铺天盖地的广告中找出自己需要的信息。
+图 1- 2019年2月中文搜索引擎使用
+数据来自：2019年2月，全球&amp;中国搜索引擎市场份额排行榜-据析趣知
+当然，也有人千方百计的去追求体验更好的goole搜索，也有人转战使用新生军今日有条，但是在国内百度搜索无疑是我们的主要工具，为了提高搜索引擎的使用效率，尽量避开那些不想看到的广告，快速、准确的找到需有用的信息， 我找了四个常用的百度高级搜索技巧介绍给大家。
+技巧一：完全匹配符 "" 描述：使用英文双引号"&ldquo;将搜索关键词括起来，可以让搜索结果完全匹配。
+举例；使用百度搜索 格力举报 和 &ldquo;格力举报&rdquo;
+结论：可以明显的看到使用了 "&rdquo; 后 格力 不会和 举报 分开，这就是搜索结果完全匹配。
+对比一A： 使用 格力举报 搜索结果 对比一B： 使用 &ldquo;格力举报&rdquo; 搜索结果 技巧二：排除搜索 描述：在搜索关键词后加 -排除关键词，可以在搜索结果中排除掉需要排除的关键词。
+举例：使用百度搜索 格力 和 格力 -奥克斯
+结论：使用了 格力 -奥克斯 搜索后很明显的结果中排除了这两天很热的格力和奥克斯的举报纠纷。
+对比二A： 使用 格力 搜索结果 对比二B： 使用 格力 -奥克斯 搜索结果 技巧三：文件格式过滤 描述：在关键词后加 filetype：xxx 可以在搜索结果中只展示指定格式结果。
+举例：使用百度搜索 毕业答辩 filetype:ppt 和 毕业答辩 filetype:doc
+结论：在关键词后添加 filetype:文件格式 后可以明显的看到搜索结果只包含了指定格式的结果。
+对比三A： 使用 毕业答辩 filetype:ppt 搜索结果 对比三B： 使用 毕业答辩 filetype:doc 搜索结果 技巧四：主题关键字包含 描述：在关键词前加 intitle: 只展示搜索结果的主题包含关键词的结果
+举例：使用百度搜索 intitle:奥克斯
+结论：搜索结果中主题中都包含 奥克斯
+使用 intitle:奥克斯 搜索结果 当然搜索引擎高级命令不止于此，搜索引擎的也不止百度一家， 希望以此抛砖引玉，能够帮大家更自主的使用搜索引擎，快速、高效的完成每一次搜索。
+欢迎感兴趣的朋友关注我的个人公众号“mddxz1995”，获取更多资源、资讯。</content></entry><entry><title>关于我</title><url>https://mdxz2048.github.io/about.html</url><categories/><tags/><content type="html"> 警惕三种怪癖 第一种怪癖：我们对已经拥有的东西迷恋到不能自拔。
 第二种怪癖：是我们总是把注意力集中到自己会失去什么上，而不是会得到什么上。
 第三种怪癖：是我们经常假定别人看待交易的角度和我们一样。</content></entry><entry><title>12306</title><url>https://mdxz2048.github.io/post/12306/</url><categories><category>工具教程</category></categories><tags><tag>12306bypass</tag><tag>抢票</tag></tags><content type="html"> 这两天需要买一张火车票，但是打开12306APP时候发现已经卖完了，就想着是不是要抢票软件去买加速包了，但是看到12306提示的是 候补 而不是无票，就去了解了一下这个候补的规则，真香！
 首先大概说一下没有候补之前售票流程所有官方放出来的票会直接进入一个 票池 ，12306官网、客户端以及所有抢票软件都是在这个票池中买票，当没有票的时候其实大家都买不到票，但是一发现有人退票，因为软件可以一直监测票池，所以就比人有优势抢到票，当然这是 以前 。
