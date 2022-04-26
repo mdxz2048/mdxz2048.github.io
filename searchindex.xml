@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>自上而下理解TCP协议(一)</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/</url><categories><category>网络通讯之TCP</category></categories><tags><tag>TCP协议</tag></tags><content type="html"> 本文主要介绍TCP协议在应用层的应用过程.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>自上而下理解TCP协议(一)</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/</url><categories><category>Linux内核</category></categories><tags><tag>TCP协议</tag></tags><content type="html"> 本文主要介绍TCP协议在应用层的应用过程.
 TCP协议简述 TCP协议的全称是Transmission Control Protocol，即传输控制协议，是一种面向连接的、可靠的、基于字节流的传输层通讯协议。在简化的计算机网络OSI模型中处于第四层指定的功能，UDP(用户数据报文协议)是同一层内另一个重要的传输协议。
 TCP应用层通讯过程 一个简易的TCP服务端和客户端的通讯建立过程如下：
 服务端 创建一个socket套接字；
