@@ -1,0 +1,285 @@
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>自上而下理解TCP协议(一) - MD小智</title><meta name=keywords content="博客,程序员,架构师,思考,读书,笔记,技术,分享"><meta name=author content="MD小智"><meta property="og:title" content="自上而下理解TCP协议(一)"><meta property="og:site_name" content="MD小智"><meta property="og:image" content="https://mdxz2048.github.io/img/author.jpg"><meta name=title content="自上而下理解TCP协议(一) - MD小智"><meta name=description content="欢迎来到MD小智的个人站点，这里主要分享软件、工具教程、技术学习和思考"><link rel="shortcut icon" href=https://mdxz2048.github.io/img/favicon.ico><link rel=apple-touch-icon href=https://mdxz2048.github.io/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://mdxz2048.github.io/img/apple-touch-icon.png><link href=//cdn.bootcdn.net/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.css rel=stylesheet><link href=https://mdxz2048.github.io/css/main.css rel=stylesheet type=text/css><link href=https://mdxz2048.github.io/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
+<span class=site-title>MD小智</span>
+<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>学习-思考-分享</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=/categories rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>分类</a></li><li class=menu-item><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/ itemprop=url>自上而下理解TCP协议(一)</a></h1><div class=post-meta><span class=post-time><i class="fa fa-calendar-o fa-fw"></i>
+<span class=post-meta-item-text>时间：</span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-04-26">2022-04-26</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/%E7%BD%91%E7%BB%9C%E9%80%9A%E8%AE%AF%E4%B9%8Btcp itemprop=url rel=index><span itemprop=name>网络通讯之TCP</span></a>
+&nbsp;</span></span>
+<span>|
+<i class="fa fa-file-word-o fa-fw"></i>
+<span class=post-meta-item-text>字数：</span>
+<span class=leancloud-world-count>1584 字</span></span>
+<span>|
+<i class="fa fa-eye fa-fw"></i>
+<span class=post-meta-item-text>阅读：</span>
+<span class=leancloud-view-count>4分钟</span></span>
+<span id=/post/study_linux_tcp_in_linux_01/ class=leancloud_visitors data-flag-title=自上而下理解TCP协议(一)>|
+<i class="fa fa-binoculars fa-fw"></i>
+<span class=post-meta-item-text>阅读次数：</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>本文主要介绍TCP协议在<strong>应用层</strong>的应用过程.</p><h2 id=tcp协议简述>TCP协议简述</h2><p><strong>TCP</strong>协议的全称是Transmission Control Protocol，即传输控制协议，是一种面向连接的、可靠的、基于字节流的传输层通讯协议。在简化的计算机网络OSI模型中处于第四层指定的功能，UDP(用户数据报文协议)是同一层内另一个重要的传输协议。</p><p><img src=https://dd-static.jd.com/ddimg/jfs/t1/148093/16/28312/22205/62679996Eab769d93/85bdf91bae32eb7f.png alt=OSI模型与TCP协议></p><h2 id=tcp应用层通讯过程>TCP应用层通讯过程</h2><p>一个简易的TCP服务端和客户端的通讯建立过程如下：</p><p><img src=https://dd-static.jd.com/ddimg/jfs/t1/193553/14/24790/14238/6267a763Eefde7e95/6a22a6be18e3e9b8.jpg alt=server_client.jpg></p><h3 id=服务端>服务端</h3><ol><li><p>创建一个socket套接字；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>socket</span>(<span style=color:#0b0;font-weight:700>int</span> domain, <span style=color:#0b0;font-weight:700>int</span> type, <span style=color:#0b0;font-weight:700>int</span> protocol);
+</span></span></code></pre></div></li><li><p>创建一个<code>struct sockaddr_in</code>的变量<code>serveraddr</code>，将socket绑定的协议簇、IP、端口等参数完善；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#a2f;font-weight:700>struct</span> sockaddr_in serveraddr
+</span></span></code></pre></div></li><li><p>绑定<code>serveraddr</code>到<code>socket</code>；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>bind</span>(<span style=color:#0b0;font-weight:700>int</span> sockfd, <span style=color:#a2f;font-weight:700>const</span> <span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>addr,socklen_t addrlen);
+</span></span></code></pre></div></li><li><p>监听<code>socket</code>上的连接。这里<code>listen()</code>将 <code>socket</code>引用的套接字标记为被动套接字，即将用于使用 accept接收传入连接请求的套接字；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>listen</span>(<span style=color:#0b0;font-weight:700>int</span> sockfd, <span style=color:#0b0;font-weight:700>int</span> backlog);
+</span></span></code></pre></div></li><li><p>等待TCP客户端的连接；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>accept</span>(<span style=color:#0b0;font-weight:700>int</span> sockfd, <span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>addr, socklen_t <span style=color:#666>*</span>addrlen);
+</span></span></code></pre></div></li><li><p>当有TCP客户端与服务端建立连接后，<code>accept</code>会返回一个新的<code>socket</code>，在服务端通过对新的<code>socket</code>进行<code>read/write</code>操作，就可以与TCP客户端进行消息的接收/发送。</p></li></ol><h3 id=客户端>客户端</h3><p>相比服务端的建立，客户端就比较简单。</p><ol><li><p>创建一个socket套接字；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>socket</span>(<span style=color:#0b0;font-weight:700>int</span> domain, <span style=color:#0b0;font-weight:700>int</span> type, <span style=color:#0b0;font-weight:700>int</span> protocol);
+</span></span></code></pre></div></li><li><p>设置服务端的IP、端口到<code>struct sockaddr *addr</code>，与服务端建立连接；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>connect</span>(<span style=color:#0b0;font-weight:700>int</span> sockfd, <span style=color:#a2f;font-weight:700>const</span> <span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>addr,socklen_t addrlen);
+</span></span></code></pre></div></li><li><p>当连接成功后，通过<code>socket``read/write</code>操作，就可以与TCP客户端进行消息的接收/发送。</p></li></ol><h2 id=演示>演示</h2><p>我们在一台Ubuntu主机上编译<strong>演示代码</strong>中的<code>server.c</code>和<code>client.c</code>,然后在该主机上进行演示.</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>gcc server.c -o server
+</span></span><span style=display:flex><span>gcc client.c -o client
+</span></span></code></pre></div><ol><li><p>执行指令<code>./server 8888</code>运行服务端，端口号为<code>8888</code>;</p></li><li><p>执行指令<code>./client 127.0.0.1 8888</code>，让客户端连接本机的<code>8888</code>端口；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>./client 127.0.0.1 <span style=color:#666>8888</span>
+</span></span><span style=display:flex><span>Please enter msg:
+</span></span></code></pre></div></li><li><p>此时可以看到服务端监听到新的连接请求；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>./server <span style=color:#666>8888</span>
+</span></span><span style=display:flex><span>server established connection with localhost <span style=color:#666>(</span>127.0.0.1<span style=color:#666>)</span>
+</span></span></code></pre></div></li><li><p>此时在客户端输入要发送的内容"<strong>tcp test</strong>"，然后回车发送,发送完成后，可以看到服务端会进行回显。</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>Please enter msg: tcp <span style=color:#a2f>test</span>
+</span></span><span style=display:flex><span>Echo from server: tcp <span style=color:#a2f>test</span>
+</span></span></code></pre></div></li><li><p>此时可以看到服务端接收到的信息:</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>server received <span style=color:#666>9</span> bytes: tcp <span style=color:#a2f>test</span>
+</span></span></code></pre></div></li><li><p>至此，服务端的读写演示完成。</p></li></ol><h2 id=演示代码>演示代码</h2><h3 id=服务端-1>服务端</h3><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> * tcpserver.c - A simple TCP echo server
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> * usage: tcpserver &lt;port&gt;
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;stdio.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;unistd.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;stdlib.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;string.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;netdb.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;sys/types.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;sys/socket.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;netinet/in.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;arpa/inet.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080></span>
+</span></span><span style=display:flex><span><span style=color:#080>#define BUFSIZE 1024
+</span></span></span><span style=display:flex><span><span style=color:#080></span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> * error - wrapper for perror
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> */</span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>void</span> <span style=color:#00a000>error</span>(<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>msg)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    perror(msg);
+</span></span><span style=display:flex><span>    exit(<span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>main</span>(<span style=color:#0b0;font-weight:700>int</span> argc, <span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>**</span>argv)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> parentfd;                  <span style=color:#080;font-style:italic>/* parent socket */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> childfd;                   <span style=color:#080;font-style:italic>/* child socket */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> portno;                    <span style=color:#080;font-style:italic>/* port to listen on */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> clientlen;                 <span style=color:#080;font-style:italic>/* byte size of client&#39;s address */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>struct</span> sockaddr_in serveraddr; <span style=color:#080;font-style:italic>/* server&#39;s addr */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>struct</span> sockaddr_in clientaddr; <span style=color:#080;font-style:italic>/* client addr */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>struct</span> hostent <span style=color:#666>*</span>hostp;         <span style=color:#080;font-style:italic>/* client host info */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>char</span> buf[BUFSIZE];             <span style=color:#080;font-style:italic>/* message buffer */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>hostaddrp;               <span style=color:#080;font-style:italic>/* dotted decimal host addr string */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> optval;                    <span style=color:#080;font-style:italic>/* flag value for setsockopt */</span>
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> n;                         <span style=color:#080;font-style:italic>/* message byte size */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * check command line arguments
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (argc <span style=color:#666>!=</span> <span style=color:#666>2</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        fprintf(stderr, <span style=color:#b44>&#34;usage: %s &lt;port&gt;</span><span style=color:#b62;font-weight:700>\n</span><span style=color:#b44>&#34;</span>, argv[<span style=color:#666>0</span>]);
+</span></span><span style=display:flex><span>        exit(<span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    portno <span style=color:#666>=</span> atoi(argv[<span style=color:#666>1</span>]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * socket: create the parent socket
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    parentfd <span style=color:#666>=</span> socket(AF_INET, SOCK_STREAM, <span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (parentfd <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>        error(<span style=color:#b44>&#34;ERROR opening socket&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* setsockopt: Handy debugging trick that lets
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * us rerun the server immediately after we kill it;
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * otherwise we have to wait about 20 secs.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * Eliminates &#34;ERROR on binding: Address already in use&#34; error.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>// optval = 1;
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>    <span style=color:#080;font-style:italic>// setsockopt(parentfd, SOL_SOCKET, SO_REUSEADDR,
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>    <span style=color:#080;font-style:italic>//            (const void *)&amp;optval, sizeof(int));
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * build the server&#39;s Internet address
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    bzero((<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>serveraddr, <span style=color:#a2f;font-weight:700>sizeof</span>(serveraddr));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* this is an Internet address */</span>
+</span></span><span style=display:flex><span>    serveraddr.sin_family <span style=color:#666>=</span> AF_INET;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* let the system figure out our IP address */</span>
+</span></span><span style=display:flex><span>    serveraddr.sin_addr.s_addr <span style=color:#666>=</span> htonl(INADDR_ANY);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* this is the port we will listen on */</span>
+</span></span><span style=display:flex><span>    serveraddr.sin_port <span style=color:#666>=</span> htons((<span style=color:#0b0;font-weight:700>unsigned</span> <span style=color:#0b0;font-weight:700>short</span>)portno);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * bind: associate the parent socket with a port
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (bind(parentfd, (<span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>serveraddr,
+</span></span><span style=display:flex><span>             <span style=color:#a2f;font-weight:700>sizeof</span>(serveraddr)) <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>        error(<span style=color:#b44>&#34;ERROR on binding&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * listen: make this socket ready to accept connection requests
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (listen(parentfd, <span style=color:#666>5</span>) <span style=color:#666>&lt;</span> <span style=color:#666>0</span>) <span style=color:#080;font-style:italic>/* allow 5 requests to queue up */</span>
+</span></span><span style=display:flex><span>        error(<span style=color:#b44>&#34;ERROR on listen&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * main loop: wait for a connection request, echo input line,
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     * then close connection.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>     */</span>
+</span></span><span style=display:flex><span>    clientlen <span style=color:#666>=</span> <span style=color:#a2f;font-weight:700>sizeof</span>(clientaddr);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>while</span> (<span style=color:#666>1</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         * accept: wait for a connection request
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         */</span>
+</span></span><span style=display:flex><span>        childfd <span style=color:#666>=</span> accept(parentfd, (<span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>clientaddr, <span style=color:#666>&amp;</span>clientlen);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> (childfd <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>            error(<span style=color:#b44>&#34;ERROR on accept&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         * gethostbyaddr: determine who sent the message
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         */</span>
+</span></span><span style=display:flex><span>        hostp <span style=color:#666>=</span> gethostbyaddr((<span style=color:#a2f;font-weight:700>const</span> <span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>clientaddr.sin_addr.s_addr,
+</span></span><span style=display:flex><span>                              <span style=color:#a2f;font-weight:700>sizeof</span>(clientaddr.sin_addr.s_addr), AF_INET);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> (hostp <span style=color:#666>==</span> <span style=color:#a2f>NULL</span>)
+</span></span><span style=display:flex><span>            error(<span style=color:#b44>&#34;ERROR on gethostbyaddr&#34;</span>);
+</span></span><span style=display:flex><span>        hostaddrp <span style=color:#666>=</span> inet_ntoa(clientaddr.sin_addr);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> (hostaddrp <span style=color:#666>==</span> <span style=color:#a2f>NULL</span>)
+</span></span><span style=display:flex><span>            error(<span style=color:#b44>&#34;ERROR on inet_ntoa</span><span style=color:#b62;font-weight:700>\n</span><span style=color:#b44>&#34;</span>);
+</span></span><span style=display:flex><span>        printf(<span style=color:#b44>&#34;server established connection with %s (%s)</span><span style=color:#b62;font-weight:700>\n</span><span style=color:#b44>&#34;</span>,
+</span></span><span style=display:flex><span>               hostp<span style=color:#666>-&gt;</span>h_name, hostaddrp);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         * read: read input string from the client
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         */</span>
+</span></span><span style=display:flex><span>        bzero(buf, BUFSIZE);
+</span></span><span style=display:flex><span>        n <span style=color:#666>=</span> read(childfd, buf, BUFSIZE);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> (n <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>            error(<span style=color:#b44>&#34;ERROR reading from socket&#34;</span>);
+</span></span><span style=display:flex><span>        printf(<span style=color:#b44>&#34;server received %d bytes: %s&#34;</span>, n, buf);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         * write: echo the input string back to the client
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>         */</span>
+</span></span><span style=display:flex><span>        n <span style=color:#666>=</span> write(childfd, buf, strlen(buf));
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> (n <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>            error(<span style=color:#b44>&#34;ERROR writing to socket&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        close(childfd);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=客户端-1>客户端</h3><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;stdio.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;stdlib.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;string.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;unistd.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;sys/types.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;sys/socket.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;netinet/in.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080>#include</span> <span style=color:#080>&lt;netdb.h&gt;</span><span style=color:#080>
+</span></span></span><span style=display:flex><span><span style=color:#080></span>
+</span></span><span style=display:flex><span><span style=color:#080>#define BUFSIZE 1024
+</span></span></span><span style=display:flex><span><span style=color:#080></span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> * error - wrapper for perror
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> */</span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>void</span> <span style=color:#00a000>error</span>(<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>msg) {
+</span></span><span style=display:flex><span>    perror(msg);
+</span></span><span style=display:flex><span>    exit(<span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>main</span>(<span style=color:#0b0;font-weight:700>int</span> argc, <span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>**</span>argv) {
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>int</span> sockfd, portno, n;
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>struct</span> sockaddr_in serveraddr;
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>struct</span> hostent <span style=color:#666>*</span>server;
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>hostname;
+</span></span><span style=display:flex><span>    <span style=color:#0b0;font-weight:700>char</span> buf[BUFSIZE];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* check command line arguments */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (argc <span style=color:#666>!=</span> <span style=color:#666>3</span>) {
+</span></span><span style=display:flex><span>       fprintf(stderr,<span style=color:#b44>&#34;usage: %s &lt;hostname&gt; &lt;port&gt;</span><span style=color:#b62;font-weight:700>\n</span><span style=color:#b44>&#34;</span>, argv[<span style=color:#666>0</span>]);
+</span></span><span style=display:flex><span>       exit(<span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    hostname <span style=color:#666>=</span> argv[<span style=color:#666>1</span>];
+</span></span><span style=display:flex><span>    portno <span style=color:#666>=</span> atoi(argv[<span style=color:#666>2</span>]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* socket: create the socket */</span>
+</span></span><span style=display:flex><span>    sockfd <span style=color:#666>=</span> socket(AF_INET, SOCK_STREAM, <span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (sockfd <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>        error(<span style=color:#b44>&#34;ERROR opening socket&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* gethostbyname: get the server&#39;s DNS entry */</span>
+</span></span><span style=display:flex><span>    server <span style=color:#666>=</span> gethostbyname(hostname);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (server <span style=color:#666>==</span> <span style=color:#a2f>NULL</span>) {
+</span></span><span style=display:flex><span>        fprintf(stderr,<span style=color:#b44>&#34;ERROR, no such host as %s</span><span style=color:#b62;font-weight:700>\n</span><span style=color:#b44>&#34;</span>, hostname);
+</span></span><span style=display:flex><span>        exit(<span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* build the server&#39;s Internet address */</span>
+</span></span><span style=display:flex><span>    bzero((<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>) <span style=color:#666>&amp;</span>serveraddr, <span style=color:#a2f;font-weight:700>sizeof</span>(serveraddr));
+</span></span><span style=display:flex><span>    serveraddr.sin_family <span style=color:#666>=</span> AF_INET;
+</span></span><span style=display:flex><span>    bcopy((<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>)server<span style=color:#666>-&gt;</span>h_addr,
+</span></span><span style=display:flex><span>          (<span style=color:#0b0;font-weight:700>char</span> <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>serveraddr.sin_addr.s_addr, server<span style=color:#666>-&gt;</span>h_length);
+</span></span><span style=display:flex><span>    serveraddr.sin_port <span style=color:#666>=</span> htons(portno);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* connect: create a connection with the server */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (connect(sockfd, (<span style=color:#a2f;font-weight:700>struct</span> sockaddr <span style=color:#666>*</span>)<span style=color:#666>&amp;</span>serveraddr, <span style=color:#a2f;font-weight:700>sizeof</span>(serveraddr)) <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>      error(<span style=color:#b44>&#34;ERROR connecting&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* get message line from the user */</span>
+</span></span><span style=display:flex><span>    printf(<span style=color:#b44>&#34;Please enter msg: &#34;</span>);
+</span></span><span style=display:flex><span>    bzero(buf, BUFSIZE);
+</span></span><span style=display:flex><span>    fgets(buf, BUFSIZE, stdin);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* send the message line to the server */</span>
+</span></span><span style=display:flex><span>    n <span style=color:#666>=</span> write(sockfd, buf, strlen(buf));
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (n <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>      error(<span style=color:#b44>&#34;ERROR writing to socket&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* print the server&#39;s reply */</span>
+</span></span><span style=display:flex><span>    bzero(buf, BUFSIZE);
+</span></span><span style=display:flex><span>    n <span style=color:#666>=</span> read(sockfd, buf, BUFSIZE);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (n <span style=color:#666>&lt;</span> <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>      error(<span style=color:#b44>&#34;ERROR reading from socket&#34;</span>);
+</span></span><span style=display:flex><span>    printf(<span style=color:#b44>&#34;Echo from server: %s&#34;</span>, buf);
+</span></span><span style=display:flex><span>    close(sockfd);
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/tcp%e5%8d%8f%e8%ae%ae rel=tag title=TCP协议>#TCP协议#</a></div><div class=post-nav><div class=article-copyright><div class=article-copyright-img><img src=/img/qq_qrcode.png width=129px height=129px><div style=text-align:center>微信扫一扫关注</div></div><div class=article-copyright-info><p><span>声明：</span>自上而下理解TCP协议(一)</p><p><span>链接：</span>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/</p><p><span>作者：</span>MD小智</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
+<span>赏</span></button><div id=QR style=display:none><div id=wechat style=display:inline-block><img id=wechat_qr src=/img/wechat-pay.png alt="WeChat Pay"><p>微信打赏</p></div><div id=alipay style=display:inline-block><img id=alipay_qr src=/img/ali-pay.png alt=Alipay><p>支付宝打赏</p></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://mdxz2048.github.io/post/thoughts_worldbookday/ rel=prev title=当我们在谈论阅读时，我们在谈论什么>当我们在谈论阅读时，我们在谈论什么
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/avatar.png alt=MD小智><p class=site-author-name itemprop=name>MD小智</p><p class="site-description motion-element" itemprop=description>我们会高估自己所拥有的一切！</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>16</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>4</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>21</span>
+<span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/mdxz2048 target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
+GitHub</a></span></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/%E6%96%87%E4%BB%B6%E5%90%8C%E6%AD%A5>文件同步</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/12306bypass>12306bypass</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hexo>Hexo</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/markdown>Markdown</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/marktext>Marktext</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/nextcloud>Nextcloud</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/pdf%E8%BD%AC%E6%8D%A2>Pdf转换</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/resiliosync>Resiliosync</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/tcp%E5%8D%8F%E8%AE%AE>Tcp协议</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/windows10>Windows10</a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=copyright-author>MD小智</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.96.0</a></span>
+<span class=separator-line>/</span>
+<span class=theme-info>Theme by - <a class=powered-link href=//github.com/elkan1788/hugo-theme-next target=_blank>NexT</a></span></div><div class=vistor-info><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script>
+<span class=site-uv><i class="fa fa-user"></i>
+<span class=busuanzi-value id=busuanzi_value_site_uv></span></span>
+<span class=separator-line>/</span>
+<span class=site-pv><i class="fa fa-eye"></i>
+<span class=busuanzi-value id=busuanzi_value_site_pv></span></span></div><div class=license-info><span class=storage-info>Storage by
+<a href=http://github.com/ style=font-weight:700 target=_blank>GitHub</a></span>
+<span class=separator-line>/</span>
+<span class=license-num><a href=http://blog.mddxz.top/ target=_blank>MD小智</a></span></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i>
+<span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript src=//cdn.bootcdn.net/ajax/libs/jquery/2.1.4/jquery.min.js></script>
+<script type=text/javascript src=https://mdxz2048.github.io/js/search.js></script>
+<script type=text/javascript src=https://mdxz2048.github.io/js/affix.js></script>
+<script type=text/javascript src=https://mdxz2048.github.io/js/scrollspy.js></script>
+<script type=text/javascript>function detectIE(){var e=window.navigator.userAgent,t=e.indexOf("MSIE "),n=e.indexOf("Trident/"),s=e.indexOf("Edge/");return t>0||n>0||s>0?-1:1}function getCntViewHeight(){var t=$("#content").height(),e=$(window).height(),n=t>e?t-e:$(document).height()-e;return n}function getScrollbarWidth(){var e=$("<div />").addClass("scrollbar-measure").prependTo("body"),t=e[0],n=t.offsetWidth-t.clientWidth;return e.remove(),n}function registerBackTop(){var t=50,e=$(".back-to-top");$(window).on("scroll",function(){e.toggleClass("back-to-top-on",window.pageYOffset>t);var s=$(window).scrollTop(),o=getCntViewHeight(),i=s/o,n=Math.round(i*100),a=n>100?100:n;$("#scrollpercent>span").html(a)}),e.on("click",function(){$("html,body").animate({scrollTop:0,screenLeft:0},800)})}function initScrollSpy(){var e=".post-toc",s=$(e),t=".active-current";s.on("activate.bs.scrollspy",function(){var t=$(e+" .active").last();n(),t.addClass("active-current")}).on("clear.bs.scrollspy",n),$("body").scrollspy({target:e});function n(){$(e+" "+t).removeClass(t.substring(1))}}function initAffix(){var e=$(".header-inner").height(),t=parseInt($(".main").css("padding-bottom"),10),n=e+10;$(".sidebar-inner").affix({offset:{top:n,bottom:t}}),$(document).on("affixed.bs.affix",function(){updateTOCHeight(document.body.clientHeight-100)})}function initTOCDimension(){$(window).on("resize",function(){e&&clearTimeout(e),e=setTimeout(function(){var e=document.body.clientHeight-100;updateTOCHeight(e)},0)}),updateTOCHeight(document.body.clientHeight-100);var e,t=getScrollbarWidth();$(".post-toc").css("width","calc(100% + "+t+"px)")}function updateTOCHeight(e){e=e||"auto",$(".post-toc").css("max-height",e)}$(function(){var t=$(".header-inner").height()+10,n,s,e,o;$("#sidebar").css({'margin-top':t}).show(),n=parseInt($("#sidebar").css("margin-top")),s=parseInt($(".sidebar-inner").css("height")),e=n+s,o=$(".content-wrap").height(),o<e&&$(".content-wrap").css("min-height",e),$(".site-nav-toggle").on("click",function(){var e=$(".site-nav"),o=$(".toggle"),t="site-nav-on",i="toggle-close",n=e.hasClass(t),a=n?"slideUp":"slideDown",s=n?"removeClass":"addClass";e.stop()[a]("normal",function(){e[s](t),o[s](i)})}),registerBackTop(),initScrollSpy(),initAffix(),initTOCDimension(),$(".sidebar-nav-toc").click(function(){$(this).addClass("sidebar-nav-active"),$(this).next().removeClass("sidebar-nav-active"),$("."+$(this).next().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)}),$(".sidebar-nav-overview").click(function(){$(this).addClass("sidebar-nav-active"),$(this).prev().removeClass("sidebar-nav-active"),$("."+$(this).prev().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)})})</script><script src=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.js></script>
+<script type=text/javascript>$(function(){$(".post-body").viewer()})</script><script>(function(){var e=document.createElement("script"),t,n=window.location.protocol.split(":")[0];n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
