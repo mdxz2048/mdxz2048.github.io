@@ -5,7 +5,7 @@
 系统调用的工作原理 从操作系统的实现和应用程序调用两个角度来看系统调用的实现过程，实现如下：
 操作系统的实现过程 应用程序调用库函数(API)，例如insmod; API将系统调用号存入寄存器，然后通过软中断SWI使系统进入内核态; 内核中的中断处理函数根据系统调用号，调用对应的内核函数(系统调用); 系统调用完成相应的功能，将返回值存入寄存器，返回到中断处理函数； 中断处理函数返回到API中； API将寄存器内容返回给应用程序。 应用程序调用系统调用过程 把系统调用的编号存入寄存器； 把函数参数存入其他通用寄存器； 触发对应中断； 系统调用过程 以程序insmod为例，追踪一个系统调用过程。
 这里我们的insmod的程序来自与Busybox_1.30.0，我们先从其中开始找到调用入口。
-应用层调用insmod 应用层调用inmod的入口函数位于文件modutils/insmod.c
+应用层调用insmod 应用层调用insmod的入口函数位于文件modutils/insmod.c
 int insmod_main(int argc UNUSED_PARAM, char **argv) 经过跟踪，可以看到insmod_main()最终是调用了init_module()函数；在modutils/modutils.c中可以看到init_module()被定义成了对系统调用__NR_init_module的调用；
 #define init_module(mod, len, opts) syscall(__NR_init_module, mod, len, opts) 内核定义系统调用号 在文件arch/arm/include/uapi/asm/unistd.h中，可以看到定义了系统调用号
 #define __NR_init_module (__NR_SYSCALL_BASE+128) 打开内核的调用入口arch/arm/kernel/call.S，可以看到系统调用偏移量对应的是sys_init_module系统调用；
