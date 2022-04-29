@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>自上而下理解TCP协议(一)---TCP应用层介绍</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/</url><categories><category>Linux内核</category></categories><tags><tag>TCP协议</tag></tags><content type="html"> 本文主要介绍TCP协议在应用层的应用过程.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Linux内核中系统调用过程分析</title><url>https://mdxz2048.github.io/post/study_linux_syscall/</url><categories><category>Linux内核</category></categories><tags><tag>syscall</tag></tags><content type="html"> 系统调用是什么 系统调用是用户进程与内核交互的经典方法。POSIX标准定义了许多系统调用，以及这些系统调用在所有遵循POSIX的系统包括Linux上的语义。
+传统的系统调用不同类别分类，如下所示：
+进程管理：创建新进程，查询信息，调试。 信号：发送信号，定时器以及相关处理机制。 文件：创建、打开和关闭文件，从文件读取和向文件写入，查询信息和状态。 目录和文件系统：创建、删除和重命名目录，查询信息，链接，变更目录。 保护机制：读取和变更UID/GID，命名空间的处理。 定时器函数：定时器函数和统计信息。 为什么需要系统调用 首先我们从《深入Linux内核架构》中找的内核组成部分中的这张图，可以看到Linux内核的高层次概括以及完整的Linux系统中各个层次：
+从图中我们可以看到，应用程序和C库运行在用户空间，Linux内核、驱动程序运行在内核空间；内核空间相较于用户空间，对包括系统、设备硬件都有更高的操作权限，因此，应用程序需要对系统内核提出一些要求(请求)时，为了保证系统的稳定性或安全不受危及，就需要一个中间人的角色，用来在用户空间和内核空间传递指令和数据，这个中间人就是系统调用。
+系统调用的工作原理 从操作系统的实现和应用程序调用两个角度来看系统调用的实现过程，实现如下：
+操作系统的实现过程 应用程序调用库函数(API)，例如insmod; API将系统调用号存入寄存器，然后通过软中断SWI使系统进入内核态; 内核中的中断处理函数根据系统调用号，调用对应的内核函数(系统调用); 系统调用完成相应的功能，将返回值存入寄存器，返回到中断处理函数； 中断处理函数返回到API中； API将寄存器内容返回给应用程序。 应用程序调用系统调用过程 把系统调用的编号存入寄存器； 把函数参数存入其他通用寄存器； 触发对应中断； 系统调用过程 以程序insmod为例，追踪一个系统调用过程。
+这里我们的insmod的程序来自与Busybox_1.30.0，我们先从其中开始找到调用入口。
+应用层调用insmod 应用层调用inmod的入口函数位于文件modutils/insmod.c
+int insmod_main(int argc UNUSED_PARAM, char **argv) 经过跟踪，可以看到insmod_main()最终是调用了init_module()函数；在modutils/modutils.c中可以看到init_module()被定义成了对系统调用__NR_init_module的调用；
+#define init_module(mod, len, opts) syscall(__NR_init_module, mod, len, opts) 内核定义系统调用号 在文件arch/arm/include/uapi/asm/unistd.h中，可以看到定义了系统调用号
+#define __NR_init_module (__NR_SYSCALL_BASE+128) 打开内核的调用入口arch/arm/kernel/call.S，可以看到系统调用偏移量对应的是sys_init_module系统调用；
+/* 125 */ CALL(sys_mprotect) CALL(sys_sigprocmask) CALL(sys_ni_syscall) /* was sys_create_module */ CALL(sys_init_module) 我们打开include/linux/syscalls.h,可以看到对sys_init_module()的声明；
+asmlinkage long sys_init_module(void __user *umod, unsigned long len, const char __user *uargs); 注：
+内核中实际的系统调用函数实现的函数名并没有直接采用类似sys_init_module()这种格式进行定义，而是用一类宏定义的方式来进行修饰,在编译过程中，宏会自动替换，最后的调用依然是sys_init_module()。
+例如sys_init_module()一共有3个参数，则会使用下边这个宏进行修饰
+#define SYSCALL_DEFINE3(name, ...) SYSCALL_DEFINEx(3, _##name, __VA_ARGS__) 因此，在内核中直接搜索如下内容，就可以搜到实际的函数实现
+SYSCALL_DEFINE3(init_module 内核的具体实现位于kernel/module.c中，入口函数比较短，就直接贴上来。到这里，内核就开始根据传参加载模块了。
+SYSCALL_DEFINE3(init_module, void __user *, umod, unsigned long, len, const char __user *, uargs) { int err; struct load_info info = { }; err = may_init_module(); if (err) return err; pr_debug("init_module: umod=%p, len=%lu, uargs=%p\n", umod, len, uargs); err = copy_module_from_user(umod, len, &amp;info); if (err) return err; return load_module(&amp;info, uargs, 0); } 至此，我们的系统调用追踪完成了。因为我的内核是编译过的，所以可以看一下module.c的编译结果，可以看到符号表中在编译过程中，已经被解析成了sys_init_module，也就验证了我们前边的说法。
+nm -r module.o 000056ac T sys_init_module</content></entry><entry><title>自上而下理解TCP协议(一)---TCP应用层介绍</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_01/</url><categories><category>Linux内核</category></categories><tags><tag>TCP协议</tag></tags><content type="html"> 本文主要介绍TCP协议在应用层的应用过程.
 TCP协议简述 TCP协议的全称是Transmission Control Protocol，即传输控制协议，是一种面向连接的、可靠的、基于字节流的传输层通讯协议。在简化的计算机网络OSI模型中处于第四层指定的功能，UDP(用户数据报文协议)是同一层内另一个重要的传输协议。
 TCP应用层通讯过程 一个简易的TCP服务端和客户端的通讯建立过程如下：
 服务端 创建一个socket套接字；
