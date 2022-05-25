@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>自上而下理解内核网络(三)---内核应用层的TCP通讯</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_03/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在“自上而下理解内核网络(一)&mdash;TCP应用层介绍”我们介绍了一个简易的TCP server和TCP client，结合上一节中对Linux kernel中网络分层的相关知识，我们这一节展示在内核应用层的相关操作：
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>自上而下理解内核网络(四)---sock与传输层UDP</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_04/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在上一节我们介绍了内核网络在内核应用层以struct socket结构体的形式进行创建和传递。这一节，我们继续自上而下进行分析。
+在进入传输层(UDP/TCP协议栈)之前，内核有一个INET层，定义了struct sock结构体，将传输层的TCP/IP协议栈(struct proto)和应用层struct socket关联起来。因为TCP协议的复杂性，我们很难在这里简单的在传输层进行分析，分析TCP协议也不是我们这里的重点，我们更关注整个Linux内核网络对数据的逐层处理，因此，我们这一节将在传输层选取UDP相关协议实现进行分析。
+本节我们主要有两个任务：
+了解sock层的处理； 分析传输层(UDP协议)的数据处理流程；</content></entry><entry><title> 自上而下理解内核网络(三)---内核应用层的TCP通讯</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_03/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在“自上而下理解内核网络(一)&mdash;TCP应用层介绍”我们介绍了一个简易的TCP server和TCP client，结合上一节中对Linux kernel中网络分层的相关知识，我们这一节展示在内核应用层的相关操作：
 用户空间socket()之后内核空间做了什么事情？ 发送数据 接收数据 创建socket 不管是TCP服务端还是TCP客户端，建立的第一步都是创建socket。因此，我们这里首先展示一下，socket()之后都发生了什么？
 为了方便观察，我们这里先将调用关系进行展示，然后再分析每一步的功能。调用关系如下图所示：
 用户空间调用socket()函数；
