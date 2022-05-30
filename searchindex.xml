@@ -22,7 +22,19 @@ if (msg->msg_controllen) { err = ip_cmsg_send(sk, msg, &amp;ipc, sk->sk_family =
 if (!ipc.opt) { struct ip_options_rcu *inet_opt; rcu_read_lock(); inet_opt = rcu_dereference(inet->inet_opt); if (inet_opt) { memcpy(&amp;opt_copy, inet_opt, sizeof(*inet_opt) + inet_opt->opt.optlen); ipc.opt = &amp;opt_copy.opt; } rcu_read_unlock(); } 检查源路由记录，有2个源路由记录的类型：LSR和SSR如果设置了此选项，则第一个跃点地址将被记录并存储为 faddr，并且套接字将标记为“未连接”；
 if (ipc.opt &amp;&amp; ipc.opt->opt.srr) { if (!daddr) return -EINVAL; faddr = ipc.opt->opt.faddr; connected = 0; } 处理 SRR 选项后，将从用户通过辅助消息设置的值或套接字当前正在使用的值中检索 TOS IP 标志。后跟检查:
 SO_DONTROUTE标准，setsockopt来设置，或者 MSG_DONTROUTE被设置，当使用sendto和sendmsg时或者 is_strictroute被设置，表示需要严格的源记录路由； 然后，tos的标志位0x1 (RTO_ONLINK)被设置，connected被标志为未连接；
-tos = get_rttos(&amp;ipc, inet); if (sock_flag(sk, SOCK_LOCALROUTE) || (msg->msg_flags &amp; MSG_DONTROUTE) || (ipc.opt &amp;&amp; ipc.opt->opt.is_strictroute)) { tos |= RTO_ONLINK; connected = 0; } 多播还是单拨？</content></entry><entry><title> 自上而下理解内核网络(三)---内核应用层的TCP通讯</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_03/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在“自上而下理解内核网络(一)&mdash;TCP应用层介绍”我们介绍了一个简易的TCP server和TCP client，结合上一节中对Linux kernel中网络分层的相关知识，我们这一节展示在内核应用层的相关操作：
+tos = get_rttos(&amp;ipc, inet); if (sock_flag(sk, SOCK_LOCALROUTE) || (msg->msg_flags &amp; MSG_DONTROUTE) || (ipc.opt &amp;&amp; ipc.opt->opt.is_strictroute)) { tos |= RTO_ONLINK; connected = 0; } 多播还是单拨？ 接下来，代码试图处理多播(组播)。这是一个棘手的问题，因为用户可以通过发送辅助IP_PKTINFO消息来指定从何处发送数据包的备用源地址或设备索引，如前所述。
+如果目的地址是组播地址。
+写入packet的设备索引将被设置为组播设备索引； packet上的源地址将被设置为组播源地址。 如果用户没有通过IP_PKTINFO来覆盖索引，则是如下处理：
+if (ipv4_is_multicast(daddr)) { if (!ipc.oif) ipc.oif = inet->mc_index; if (!saddr) saddr = inet->mc_addr; connected = 0; } else if (!ipc.oif) ipc.oif = inet->uc_index; 如果不是组播，则直接设置用户索引inet->uc_index。除非用户使用IP_PKTINFO来指定。
+路由 如果socket的connected状态是连接的1，则使用一个快的路径来获取路由结构体。
+if (connected) rt = (struct rtable *)sk_dst_check(sk, 0); 如果套接字未连接，或者sk_dst_check检查确定路由已过时，则划入一个慢的路径生成一个新的路由结构。通过调用flowi4_init_output来为这个UDP流构建一个结构体。
+if (!rt) { struct net *net = sock_net(sk); __u8 flow_flags = inet_sk_flowi_flags(sk); fl4 = &amp;fl4_stack; flowi4_init_output(fl4, ipc.oif, sk->sk_mark, tos, RT_SCOPE_UNIVERSE, sk->sk_protocol, flow_flags, faddr, saddr, dport, inet->inet_sport); 构建此流结构后，套接字及其流结构将传递到安全子系统，以便 SELinux 或 SMACK 等系统可以在流结构上设置安全 ID 值。接下来，ip_route_output_flow将调用 IP 路由代码，为此流生成路由结构：
+security_sk_classify_flow(sk, flowi4_to_flowi(fl4)); rt = ip_route_output_flow(net, fl4, sk); if (IS_ERR(rt)) { err = PTR_ERR(rt); rt = NULL; if (err == -ENETUNREACH) IP_INC_STATS(net, IPSTATS_MIB_OUTNOROUTES); goto out; } 在下来这个位置，保存统计计数器和其他计数器。其含义将在下面UDP监视部分讨论。
+接下来，如果路由被设置为广播，但是socket的SOCK_BROADCAST选项没有被设置，则代码终止。如果socket被认为是“connected”的，则将路由结构缓存下来。
+err = -EACCES; if ((rt->rt_flags &amp; RTCF_BROADCAST) &amp;&amp; !sock_flag(sk, SOCK_BROADCAST)) goto out; if (connected) sk_dst_set(sk, dst_clone(&amp;rt->dst)); 防止ARP缓存引起的MSG_CONFIRM过时 如果用户调用send、sendto或者sendmsg的时候，指定了MSG_CONFIRM标志，协议层将进行处理：
+if (msg->msg_flags&amp;MSG_CONFIRM) goto do_confirm; back_from_confirm: 这个标志指示系统验证ARP是否有效，并防止对其进行垃圾回收。dst_confirm函数只是在目标缓存条目上设置一个标志，当查询相邻缓存并找到条目时，将在很久以后检查该标志。我们稍后会再次看到这一点。此功能通常用于 UDP 网络应用进程，以减少不必要的 ARP 流量。do_confirm标签位于此函数的末尾附近，但它很简单：
+do_confirm: dst_confirm(&amp;rt->dst); if (!(msg->msg_flags&amp;MSG_PROBE) || len) goto back_from_confirm; err = 0; goto out; 参考：
+Monitoring and Tuning the Linux Networking Stack: Sending Data</content></entry><entry><title> 自上而下理解内核网络(三)---内核应用层的TCP通讯</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_03/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在“自上而下理解内核网络(一)&mdash;TCP应用层介绍”我们介绍了一个简易的TCP server和TCP client，结合上一节中对Linux kernel中网络分层的相关知识，我们这一节展示在内核应用层的相关操作：
 用户空间socket()之后内核空间做了什么事情？ 发送数据 接收数据 创建socket 不管是TCP服务端还是TCP客户端，建立的第一步都是创建socket。因此，我们这里首先展示一下，socket()之后都发生了什么？
 为了方便观察，我们这里先将调用关系进行展示，然后再分析每一步的功能。调用关系如下图所示：
 用户空间调用socket()函数；
