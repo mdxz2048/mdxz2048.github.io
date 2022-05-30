@@ -33,7 +33,26 @@ security_sk_classify_flow(sk, flowi4_to_flowi(fl4)); rt = ip_route_output_flow(n
 接下来，如果路由被设置为广播，但是socket的SOCK_BROADCAST选项没有被设置，则代码终止。如果socket被认为是“connected”的，则将路由结构缓存下来。
 err = -EACCES; if ((rt->rt_flags &amp; RTCF_BROADCAST) &amp;&amp; !sock_flag(sk, SOCK_BROADCAST)) goto out; if (connected) sk_dst_set(sk, dst_clone(&amp;rt->dst)); 防止ARP缓存引起的MSG_CONFIRM过时 如果用户调用send、sendto或者sendmsg的时候，指定了MSG_CONFIRM标志，协议层将进行处理：
 if (msg->msg_flags&amp;MSG_CONFIRM) goto do_confirm; back_from_confirm: 这个标志指示系统验证ARP是否有效，并防止对其进行垃圾回收。dst_confirm函数只是在目标缓存条目上设置一个标志，当查询相邻缓存并找到条目时，将在很久以后检查该标志。我们稍后会再次看到这一点。此功能通常用于 UDP 网络应用进程，以减少不必要的 ARP 流量。do_confirm标签位于此函数的末尾附近，但它很简单：
-do_confirm: dst_confirm(&amp;rt->dst); if (!(msg->msg_flags&amp;MSG_PROBE) || len) goto back_from_confirm; err = 0; goto out; 参考：
+do_confirm: dst_confirm(&amp;rt->dst); if (!(msg->msg_flags&amp;MSG_PROBE) || len) goto back_from_confirm; err = 0; goto out; 如果不是probe，验证完cache的条目后，返回back_from_confirm；
+一旦do_confirm返回到back_from_confirm，开始处理UDP corked的问题。
+uncorked UDP sockets快速路径：准备传输数据 如果UDP未请求corked，数据可以被打包到struct sk_buff，然后通过udp_send_skb发送到IP协议层。这是通过调用ip_make_skb来完成的。
+通过ip_route_output_flow生成的路由结构也会被传入，它将附着在skb中，之后在IP协议层使用。
+/* Lockless fast path for the non-corking case. */ if (!corkreq) { skb = ip_make_skb(sk, fl4, getfrag, msg, ulen, sizeof(struct udphdr), &amp;ipc, &amp;rt, msg->msg_flags); err = PTR_ERR(skb); if (!IS_ERR_OR_NULL(skb)) err = udp_send_skb(skb, fl4); goto out; } ip_make_skb函数将尝试构建一个skb，同时考虑到广泛的因素，例如：
+MTU UDP corking (if enabled) UDP Fragmentation Offloading (UFO) 分包传输，如果UFO不受支持并且要传输的数据的大小大于MTU。 传输数据 如果没有发生错误，udp_send_skb来处理skb，将数据传入到协议栈的下一层，也就是IP协议栈。
+如果发生了 错误，错误将被记录，这里我们没有深入研究。
+err = PTR_ERR(skb); if (!IS_ERR_OR_NULL(skb)) err = udp_send_skb(skb, fl4); corkingUDP sockets慢速路径 如果UDP socket被corked，同时先前数据没有被阻塞住，慢速路径开启：
+LOCK这个socket； 检查应用错误bug：一个已经corked的socket被重复corked； cork the socket pend data lock_sock(sk); if (unlikely(up->pending)) { /* The socket is already corked while preparing it. */ /* ... which is an evident application bug. --ANK */ release_sock(sk); net_dbg_ratelimited("cork app bug 2\n"); err = -EINVAL; goto out; } /* * Now cork the socket to pend data. */ fl4 = &amp;inet->cork.fl.u.ip4; fl4->daddr = daddr; fl4->saddr = saddr; fl4->fl4_dport = dport; fl4->fl4_sport = inet->inet_sport; up->pending = AF_INET; do_append_data: up->len += ulen; err = ip_append_data(sk, fl4, getfrag, msg, ulen, sizeof(struct udphdr), &amp;ipc, &amp;rt, corkreq ? msg->msg_flags|MSG_MORE : msg->msg_flags); if (err) udp_flush_pending_frames(sk); else if (!corkreq) err = udp_push_pending_frames(sk); else if (unlikely(skb_queue_empty(&amp;sk->sk_write_queue))) up->pending = 0; release_sock(sk); 传输层之UDP接收 在UDP层接收之前数据大致的流向如下：
+udp_rcv udp_rcv的实现是在net/ipv4/udp.c；
+这里只有简单一行去调用__udp4_lib_rcv；
+__udp4_lib_rcv __udp4_lib_rcv函数检查packet是否有效，然后获取UDP头、UDP数据报文长度、源地址和目的地址。接下来，会进行完整性检查和数据的校验。
+在IP协议层，数据报文被优化，加上了dst_entry数据然后传递到了UDP协议层。
+如果一个socket的dst_entry被找到，则__udp4_lib_rcv 将排队UDP数据包到socket；
+sk = skb_steal_sock(skb); if (sk) { struct dst_entry *dst = skb_dst(skb); int ret; if (unlikely(sk->sk_rx_dst != dst)) udp_sk_rx_dst_set(sk, dst); ret = udp_queue_rcv_skb(sk, skb); sock_put(sk); /* a return value > 0 means to resubmit the input, but * it wants the return to be -protocol, or 0 */ if (ret > 0) return -ret; return 0; } 如果没有从early_demux操作连接套接字，则现在将通过调用__udp4_lib_lookup_skb来查找接收套接字。
+if (rt->rt_flags &amp; (RTCF_BROADCAST|RTCF_MULTICAST)) return __udp4_lib_mcast_deliver(net, skb, uh, saddr, daddr, udptable, proto); sk = __udp4_lib_lookup_skb(skb, uh->source, uh->dest, udptable); if (sk) { int ret; if (inet_get_convert_csum(sk) &amp;&amp; uh->check &amp;&amp; !IS_UDPLITE(sk)) skb_checksum_try_convert(skb, IPPROTO_UDP, uh->check, inet_compute_pseudo); ret = udp_queue_rcv_skb(sk, skb); /* a return value > 0 means to resubmit the input, but * it wants the return to be -protocol, or 0 */ if (ret > 0) return -ret; return 0; } 在上述两种情况下，数据包都将被排队到socket；
+ret = udp_queue_rcv_skb(sk, skb); sock_put(sk); 如果socket没有匹配上，或者校验和错误，则丢弃当前packet；
+/* No socket. Drop packet silently, if checksum is wrong */ if (udp_lib_checksum_complete(skb)) goto csum_error; __UDP_INC_STATS(net, UDP_MIB_NOPORTS, proto == IPPROTO_UDPLITE); icmp_send(skb, ICMP_DEST_UNREACH, ICMP_PORT_UNREACH, 0); udp_queue_rcv_skb 此函数初始化部分如下所示：
+确定该数据包关联的套接字是否为封装套接字，如果是，将数据传递到该层的处理函数； 确定该数据包是否是UDP-Lite数据，然后做完整的检查； 验证数据校验和，如果验证失败，则丢弃； 最后，我们到达接收队列逻辑，该逻辑首先检查套接字的接收队列是否已满。/net/ipv4/udp.c
+参考：
 Monitoring and Tuning the Linux Networking Stack: Sending Data</content></entry><entry><title> 自上而下理解内核网络(三)---内核应用层的TCP通讯</title><url>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_03/</url><categories><category>Linux内核</category></categories><tags><tag>自上而下理解内核网络</tag></tags><content type="html"> 在“自上而下理解内核网络(一)&mdash;TCP应用层介绍”我们介绍了一个简易的TCP server和TCP client，结合上一节中对Linux kernel中网络分层的相关知识，我们这一节展示在内核应用层的相关操作：
 用户空间socket()之后内核空间做了什么事情？ 发送数据 接收数据 创建socket 不管是TCP服务端还是TCP客户端，建立的第一步都是创建socket。因此，我们这里首先展示一下，socket()之后都发生了什么？
 为了方便观察，我们这里先将调用关系进行展示，然后再分析每一步的功能。调用关系如下图所示：
