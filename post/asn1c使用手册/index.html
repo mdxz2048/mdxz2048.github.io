@@ -14,7 +14,7 @@
 <span>|
 <i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>6531 字</span></span>
+<span class=leancloud-world-count>6627 字</span></span>
 <span>|
 <i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
@@ -22,7 +22,7 @@
 <span id=/post/asn1c%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/ class=leancloud_visitors data-flag-title=ASN1C使用手册>|
 <i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h2 id=使用开源asn1编译器介绍>使用开源ASN.1编译器介绍</h2><p><em>ANS1C</em>的全称是<em>ASN.1 Compiler</em>，主要用来根据ASN.1文件来生成对应的兼容C++的C代码。支持<em>BER/OER/PER/XER</em>多种格式的编解码。</p><ul><li>作者：Lev Walkin <a href=mailto:vlm@lionet.info>vlm@lionet.info</a></li><li>ASN.1版本：0.9.29</li><li>开源地址：<a href=https://github.com/vlm/asn1c>asn1c</a></li></ul><h2 id=安装>安装</h2><p>以下演示在<em>Ubuntu20.04</em>虚拟机上，通过源码安装asn1c编译器，其他平台过程类似。</p><h3 id=环境依赖httpsgithubcomvlmasn1cblobmasterrequirementsmd><a href=https://github.com/vlm/asn1c/blob/master/REQUIREMENTS.md>环境依赖</a></h3><ul><li>automake大于1.15</li><li>libtool</li><li>bison等于2.x，实测3.5.1版本也可以使用</li><li>flex</li></ul><h3 id=从源码编译httpsgithubcomvlmasn1cblobmasterinstallmdcompiling-from-sources><a href=https://github.com/vlm/asn1c/blob/master/INSTALL.md#compiling-from-sources>从源码编译</a></h3><ol><li><p>执行如下指令，下载源码到本地，然后进入<em>asn1c</em>文件夹；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git clone git@github.com:vlm/asn1c.git
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h2 id=使用开源asn1编译器介绍>使用开源ASN.1编译器介绍</h2><p><em>ANS1C</em>的全称是<em>ASN.1 Compiler</em>，主要用来根据ASN.1文件来生成对应的兼容C++的C代码。支持<em>BER/OER/PER/XER</em>多种格式的编解码。</p><p>ASN1C是一个编译器，以ASN.1语法和ASN.1文件生成语法树，然后编译出目标语言，我们这里主要用C语言，以后要学习编译器，相信研究一下asn1c也是个不错的选择，这里我们先了解它的使用。</p><ul><li>作者：Lev Walkin <a href=mailto:vlm@lionet.info>vlm@lionet.info</a></li><li>ASN.1版本：0.9.29</li><li>开源地址：<a href=https://github.com/vlm/asn1c>asn1c</a></li></ul><h2 id=安装>安装</h2><p>以下演示在<em>Ubuntu20.04</em>虚拟机上，通过源码安装asn1c编译器，其他平台过程类似。</p><h3 id=环境依赖httpsgithubcomvlmasn1cblobmasterrequirementsmd><a href=https://github.com/vlm/asn1c/blob/master/REQUIREMENTS.md>环境依赖</a></h3><ul><li>automake大于1.15</li><li>libtool</li><li>bison等于2.x，实测3.5.1版本也可以使用</li><li>flex</li></ul><h3 id=从源码编译httpsgithubcomvlmasn1cblobmasterinstallmdcompiling-from-sources><a href=https://github.com/vlm/asn1c/blob/master/INSTALL.md#compiling-from-sources>从源码编译</a></h3><ol><li><p>执行如下指令，下载源码到本地，然后进入<em>asn1c</em>文件夹；</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git clone git@github.com:vlm/asn1c.git
 </span></span><span style=display:flex><span><span style=color:#a2f>cd</span> asn1c
 </span></span></code></pre></div></li><li><p>使用默认配置设置工程：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span><span style=color:#a2f>test</span> -f configure <span style=color:#666>||</span> autoreconf -iv
 </span></span><span style=display:flex><span>./configure

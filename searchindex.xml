@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>ASN1C使用手册</title><url>https://mdxz2048.github.io/post/asn1c%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url><categories><category>工具教程</category></categories><tags><tag>ASN1C</tag><tag>ASN.1</tag></tags><content type="html"> 使用开源ASN.1编译器介绍 ANS1C的全称是ASN.1 Compiler，主要用来根据ASN.1文件来生成对应的兼容C++的C代码。支持BER/OER/PER/XER多种格式的编解码。
+ASN1C是一个编译器，以ASN.1语法和ASN.1文件生成语法树，然后编译出目标语言，我们这里主要用C语言，以后要学习编译器，相信研究一下asn1c也是个不错的选择，这里我们先了解它的使用。
 作者：Lev Walkin vlm@lionet.info ASN.1版本：0.9.29 开源地址：asn1c 安装 以下演示在Ubuntu20.04虚拟机上，通过源码安装asn1c编译器，其他平台过程类似。
 环境依赖 automake大于1.15 libtool bison等于2.x，实测3.5.1版本也可以使用 flex 从源码编译 执行如下指令，下载源码到本地，然后进入asn1c文件夹；
 git clone git@github.com:vlm/asn1c.git cd asn1c 使用默认配置设置工程：
