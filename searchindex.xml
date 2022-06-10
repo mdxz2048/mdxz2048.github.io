@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>ASN1C使用手册</title><url>https://mdxz2048.github.io/post/asn1c%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url><categories><category>工具教程</category></categories><tags><tag>ASN1C</tag><tag>ASN.1</tag></tags><content type="html"> 使用开源ASN.1编译器介绍 ANS1C的全称是ASN.1 Compiler，主要用来根据ASN.1文件来生成对应的兼容C++的C代码。支持BER/OER/PER/XER多种格式的编解码。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>ASN1C使用手册</title><url>https://mdxz2048.github.io/post/asn1c%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url><categories><category>工具教程</category></categories><tags><tag>ASN1C编译器</tag><tag>ASN.1</tag></tags><content type="html"> 使用开源ASN.1编译器介绍 ANS1C的全称是ASN.1 Compiler，主要用来根据ASN.1文件来生成对应的兼容C++的C代码。支持BER/OER/PER/XER多种格式的编解码。
 ASN1C是一个编译器，以ASN.1语法和ASN.1文件生成语法树，然后编译出目标语言，我们这里主要用C语言，以后要学习编译器，相信研究一下asn1c也是个不错的选择，这里我们先了解它的使用。
 作者：Lev Walkin vlm@lionet.info ASN.1版本：0.9.29 开源地址：asn1c 安装 以下演示在Ubuntu20.04虚拟机上，通过源码安装asn1c编译器，其他平台过程类似。
 环境依赖 automake大于1.15 libtool bison等于2.x，实测3.5.1版本也可以使用 flex 从源码编译 执行如下指令，下载源码到本地，然后进入asn1c文件夹；
@@ -19,7 +19,7 @@ RectangleModule DEFINITIONS ::= BEGIN Rectangle ::= SEQUENCE { height INTEGER, w
 asn1c -no-gen-example -D out asn_files/rectangle.asn 到这里，就可以在out文件夹下得到多个文件，其中包含了Rectangle.c 和Rectangle.h。
 创建一个包含main.c的文件，在main()函数中创建结构体Rectangle_t，然后使用BER、XER编码规则进行编码。main.c内容如下：
 /* * @Author : lv zhipeng * @Date : 2022-06-09 16:10:41 * @LastEditors : lv zhipeng * @LastEditTime : 2022-06-09 16:11:55 * @FilePath : /asn1c/out/main.c * @Description : * */ #include &lt;Rectangle.h> /* Rectangle ASN.1 type */#include &lt;stdio.h>#include &lt;sys/types.h>/* Write the encoded output into some FILE stream. */ static int write_out(const void *buffer, size_t size, void *app_key) { FILE *out_fp = app_key; size_t wrote = fwrite(buffer, 1, size, out_fp); return (wrote == size) ? 0 : -1; } int main(int ac, char **av) { Rectangle_t *rectangle; /* Type to encode */ asn_enc_rval_t ec; /* Encoder return value */ /* Allocate the Rectangle_t */ rectangle = calloc(1, sizeof(Rectangle_t)); /* not malloc! */ if(!rectangle) { perror("calloc() failed"); exit(1); } /* Initialize the Rectangle members */ rectangle->height = 42; /* any random value */ rectangle->width = 23; /* any random value */ /* BER encode the data if filename is given */ if(ac &lt; 2) { fprintf(stderr, "Specify filename for BER output\n"); } else { const char *filename = av[1]; FILE *fp = fopen(filename, "wb"); /* for BER output */ if(!fp) { perror(filename); exit(1); } /* Encode the Rectangle type as BER (DER) */ ec = der_encode(&amp;asn_DEF_Rectangle, rectangle, write_out, fp); fclose(fp); if(ec.encoded == -1) { fprintf(stderr, "Could not encode Rectangle(at % s)\n", ec.failed_type ? ec.failed_type->name : "unknown"); exit(1); } else { fprintf(stderr, "Created % s with BER encoded Rectangle\n", filename); } } /* Also print the constructed Rectangle XER encoded (XML) */ xer_fprint(stdout, &amp;asn_DEF_Rectangle, rectangle); return 0; /* Encoding finished successfully */ } 这里有一个asn1c的bug，需要从asn1c源码目录手动复制这几个文件到out目录再编译，否则需要禁用相关OER的编解码，具体解决方案可以看这里
-cp ../skeletons/BIT_STRING* ./ cp ../skeletons/OCTET_STRING* ./ 编译所有文件，生成可执行文件rencode。
+cd out cp ../skeletons/BIT_STRING* ./ cp ../skeletons/OCTET_STRING* ./ 编译所有文件，生成可执行文件rencode。
 cc -I. -o rencode *.c 这个rencode程序，就是支持BER、XER编码的Rectangle编码器，运行程序可以看到我们在main()函数中填充的数据XER格式的输出：
 ╭─ caeri@ubuntu  ~/lzp/GIT/asn1c/out   master ?  INSERT   ✔ ╰─ ./rencode Specify filename for BER output &lt;Rectangle> &lt;height>42&lt;/height> &lt;width>23&lt;/width> &lt;/Rectangle> 1.3 一个“Rectangle”解码器 这个示例将帮助你新增一个“Rectangle”的BER、XER解码器。
 新建一个名为rectangle.asn 的文件。内容如下：
@@ -28,13 +28,20 @@ asn1c -no-gen-example -D out asn_files/rectangle.asn 到这里，就可以在当
 创建一个main.c文件，包含main()函数，该函数接收一个二进制输入文件，它将输入文件按照BER编码规则进行解码为Rectangle 格式，然后会打印输出XML格式的内容。内容如下：
 #include &lt;Rectangle.h> /* Rectangle ASN.1 type */#include &lt;stdio.h>#include &lt;sys/types.h>int main(int ac, char **av) { char buf[1024]; /* Temporary buffer */ asn_dec_rval_t rval; /* Decoder return value */ Rectangle_t *rectangle = 0; /* Type to decode. Note this 01! */ FILE *fp; /* Input file handler */ size_t size; /* Number of bytes read */ char *filename; /* Input file name */ /* Require a single filename argument */ if(ac != 2) { fprintf(stderr, "Usage: % s&lt;file.ber>\n", av[0]); exit(1); } else { filename = av[1]; } /* Open input file as readିonly binary */ fp = fopen(filename, "rb"); if(!fp) { perror(filename); exit(1); } /* Read up to the buffer size */ size = fread(buf, 1, sizeof(buf), fp); fclose(fp); if(!size) { fprintf(stderr, "% s: Empty or broken\n", filename); exit(1); } /* Decode the input buffer as Rectangle type */ rval = ber_decode(0, &amp;asn_DEF_Rectangle, (void **)&amp;rectangle, buf, size); if(rval.code != RC_OK) { fprintf(stderr, "% s: Broken Rectangle encoding at byte% ld\n", filename,(long)rval.consumed); exit(1); } /* Print the decoded Rectangle type as XML */ xer_fprint(stdout, &amp;asn_DEF_Rectangle, rectangle); return 0; /* Decoding finished successfully */ } 编译所有文件，生成可执行文件rencode（注意参考1.2复制缺少的文件）。
 cc -I. -o rdecode *.c 这个rdncode程序，就是支持BER、XER编码的Rectangle解码器。
-1.4 给“Rectangle”增加约束(验证) 此示例显示如何向 ASN.1 规范添加基本约束以及如何调用应用程序中的约束验证代码。
-创建名为rectangle.asn的文件。内容如下：
-RectangleModuleWithConstraints DEFINITIONS ::= BEGIN Rectangle ::= SEQUENCE { height INTEGER (0..100), -- Value range constraint width INTEGER (0..MAX) -- Makes width non-negative } END 参考1.3中节，编译文件生成.c和.h。
-将如下代码加入到Rectangle的处理程序末尾，这里指的是，加入到编码/解码代码末尾。
-int ret; /* Return value */ char errbuf[128]; /* Buffer for error message */ size_t errlen = sizeof(errbuf); /* Size of the buffer */ /* ... here goes the Rectangle decoding code ... */ ret = asn_check_constraints(&amp;asn_DEF_Rectangle, rectangle, errbuf, &amp;errlen); /* assert(errlen &lt; sizeof(errbuf)); // you may rely on that */ if(ret) { fprintf(stderr, ”Constraint validation failed: %s\n”, errbuf); /* exit(...); // Replace with appropriate action */ } /* ... here goes the Rectangle encoding code ... */ 像上一节那样编译所有文件。
-可以通过将整数值101分配给.height成员来检测约束带吗是否有效，若出错会打印“Constraint validation failed”。或者也可以通过其他给.width值传入负值来检测。
-结束。
+1.4 给“Rectangle”增加约束(数据验证) 此示例显示如何向 ASN.1 规范添加基本约束以及如何调用应用程序中的约束验证代码。
+创建名为rectangle.asn的文件。内容如下:
+这里我们对asn的使用手册中rectangle.asn进行了修改，将width INTEGER (0..MAX)修改为width INTEGER (0..200)，因为在使用MAX时，没有指定具体的最大值，所以在后边的asn_check_constraints()时发生错误。
+RectangleModuleWithConstraints DEFINITIONS ::= BEGIN Rectangle ::= SEQUENCE { height INTEGER (0..100), -- Value range constraint width INTEGER (0..200) -- Makes width non-negative } END 参考1.3中节，编译文件生成.c和.h。
+asn1c -no-gen-example -D out asn_files/rectangle.asn 新建main.c，将1.2 一个“Rectangle”编码器中的main.c复制过来，然后将如下代码加入到处理程序末尾，部分如下：
+/* Also print the constructed Rectangle XER encoded (XML) */ xer_fprint(stdout, &amp;asn_DEF_Rectangle, rectangle); int ret;/* Return value */ char errbuf[128]; /* Buffer for error message */ size_t errlen = sizeof(errbuf); /* Size of the buffer */ /* ... here goes the Rectangle decoding code ... */ ret = asn_check_constraints(&amp;asn_DEF_Rectangle, rectangle, errbuf, &amp;errlen); /* assert(errlen &lt; sizeof(errbuf)); // you may rely on that */ if(ret) { fprintf(stderr, "Constraint validation failed : % s\n", errbuf); /* exit(...); // Replace with appropriate action */ } /* ... here goes the Rectangle encoding code ... */ 像上一节那样编译所有文件，这里主要要复制
+cd out cp ../skeletons/BIT_STRING* ./ cp ../skeletons/OCTET_STRING* ./ cc -I. -o rencode *.c 这里我们进行两次实验，分别让填充数据合法和超限，观察程序的检测结果：
+第一次，数据合法
+填充合法数据
+/* Initialize the Rectangle members */ rectangle->height = 15; /* any random value */ rectangle->width = 30; /* any random value */ 执行结果
+╭─ caeri@ubuntu  ~/lzp/GIT/asn1c/out   master ?  INSERT   SIGINT(2) ↵ ╰─ ./rencode Specify filename for BER output &lt;Rectangle> &lt;height>15&lt;/height> &lt;width>30&lt;/width> &lt;/Rectangle> 第二次，数据超限
+填充超限数据
+/* Initialize the Rectangle members */ rectangle->height = 150; /* any random value */ rectangle->width = 300; /* any random value */ 执行结果
+╭─ caeri@ubuntu  ~/lzp/GIT/asn1c/out   master ?  INSERT   ✔ ╰─ ./rencode Specify filename for BER output &lt;Rectangle> &lt;height>150&lt;/height> &lt;width>300&lt;/width> &lt;/Rectangle> Constraint validation failed : INTEGER: constraint failed (Rectangle.c:30) 至此，数据验证演示完毕。
 ASN.1编译器 2.1 ASN1C编译工具 ASN.1编译器是将ASN.1表示法中的规范转换为其他一些语言，例如C语言。
 编译器读取(输入)规范，发出(输出)一系列目标语言的结构(struct, union, enum )来买数相应的ASN.1类型。编译器还会创建支持这些结构体序列化/反序列化的代码，代码支持BER、DER、OER、PER、XER的编码规则。
 这里以ASN.1为例：
