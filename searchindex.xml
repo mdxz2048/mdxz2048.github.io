@@ -43,20 +43,20 @@ cd out cp ../skeletons/BIT_STRING* ./ cp ../skeletons/OCTET_STRING* ./ cc -I. -o
 /* Initialize the Rectangle members */ rectangle->height = 150; /* any random value */ rectangle->width = 300; /* any random value */ 执行结果
 ╭─ caeri@ubuntu  ~/lzp/GIT/asn1c/out   master ?  INSERT   ✔ ╰─ ./rencode Specify filename for BER output &lt;Rectangle> &lt;height>150&lt;/height> &lt;width>300&lt;/width> &lt;/Rectangle> Constraint validation failed : INTEGER: constraint failed (Rectangle.c:30) 至此，数据验证演示完毕。
 ASN.1编译器 2.1 ASN1C编译工具 ASN.1编译器是将ASN.1表示法中的规范转换为其他一些语言，例如C语言。
-编译器读取(输入)规范，发出(输出)一系列目标语言的结构(struct, union, enum )来买数相应的ASN.1类型。编译器还会创建支持这些结构体序列化/反序列化的代码，代码支持BER、DER、OER、PER、XER的编码规则。
+编译器读取(输入)规范，发出(输出)一系列目标语言的结构(struct, union, enum )来实现相应的ASN.1类型。编译器还会创建支持这些结构体序列化/反序列化的代码，代码支持BER、DER、OER、PER、XER的编码规则。
 这里以ASN.1为例：
 RectangleModule DEFINITIONS ::= BEGIN Rectangle ::= SEQUENCE { height INTEGER, -- Height of the rectangle width INTEGER --Width of the rectangle } END 编译器读取上述的ASN.1定义，并生成一下的C结构体：
 typedef struct Rectangle_s { long height; long width; } Rectangle_t; asn1c 编译器还创建了用于将此结构转换为独立于平台的解码器代码,解码代码支持将解码内容返回到本地机器。这些编码器和解码器也成为串行器、和反串行器。
 将ASN.1模块编译成C编码器可以像调用asn1c一样简单。
 用于编译 ASN.1 模块：
 asn1c &lt;modules.asn> 如果多个ASN.1模块包含互相以来的关系，编译的时候需要包含多个asn文件：
-asn1c &lt;module1.asn> &lt;module2.asn> ... 编译器的参数-E和-EF用来检测解析和语义错误。这些选项将指示编译器按照编译器所理解的进行转储已解析的（并修复，如果 -F 涉及修复）ASN.1 规范，这个参数可以用来检查编译器是否正确支持当前的语法构造。
+asn1c &lt;module1.asn> &lt;module2.asn> ... 编译器的参数-E和-EF用来检测解析和语义错误。这些选项将指示编译器按照编译器所理解的进行转储已解析的（-F 会尝试修复）ASN.1 规范，这个参数可以用来检查编译器是否正确支持当前的语法构造。
 asn1c -EF &lt;module-to-test.asn> -P 选项用于将编译后的输出打印到屏幕上，而不是创建一堆当前目录中磁盘上的 .c 和 .h 文件。 另一个选项 -R，询问编译器只生成需要生成的文件，并阻止生成大量链接支持文件。
 打印编译输出而不是创建多个源文件：
-asn1c -P &lt;module-to-compile-and-print.asn> 2.2 编译器输出 asn1c编译器会输出一些文件：
-.asn文件中定义的每种ASN类型对应的.c和.h文件。这些文件名的命名类似于ASN.1格式，(例如第一章提到的RectangleModule ASN.1 模块的 Rectangle.c 和 Rectangle.h)。 一些其他辅助程序的.c和.h文件，例如通用的编码器、解码器和其他有用的demo。这些有时候被称为“the term skeletons.(骨架)”，这其中有一些代码并不总是必要的，但是无论如何，编译后的代码量整体上相对小。 一个Makefile.am.libasncodecs文件，它显式的列出了所有生成的文件。这个makefile可以用来编译编解码库。 一个converter-example.c 文件，它包含了main()函数，支持编码和数据格式转换。它可以将给定的PDU文件在BER、XER、OER和PER之间进行转换。有时候我们的应用代码就是在这个文件基础上进行修改。 一个converter-example.mk 文件，该makefile文件通过编译Makefile.am.libasncodecs 和converterexample.c 文件，为你的ASN数据格式生成一个转换和调试程序。 只需要几条指令就可以编译所有内容：
-asn1c -pdu=Rectangle *.asn make -f converterିexample.mk # If you use ‘make‘ or asn1c *.asn cc -I. -DPDU=Rectangle -o rectangle.exe *.c # ... or like this 如果想要一些自定义的数据格式/逻辑函数，可以参考第一章内容进行修改。
-2.3 命令行配置 下边表格总结了ASN1C的命令行选项。
+asn1c -P &lt;module-to-compile-and-print.asn> 2.2 编译器输出 asn1c编译器会输出一些文件，包括：
+.asn文件中定义的每种ASN类型对应的.c和.h文件。这些文件名的命名类似于ASN.1格式，(例如第一章提到的RectangleModule ASN.1 模块的 Rectangle.c 和 Rectangle.h)。 一些其他辅助程序的.c和.h文件，例如通用的编码器、解码器和其他有用的demo。 一个Makefile.am.libasncodecs文件，它显式的列出了所有生成的文件。这个makefile可以用来编译编解码库。 一个converter-example.c 文件，它包含了main()函数，支持编码和数据格式转换。它可以将给定的PDU文件在BER、XER、OER和PER之间进行转换。有时候我们的应用代码就是在这个文件基础上进行修改。 一个converter-example.mk 文件，该makefile文件通过编译Makefile.am.libasncodecs 和converterexample.c 文件，为你的ASN数据格式生成一个转换和调试程序。 只需要几条指令就可以编译所有内容：
+asn1c -pdu=Rectangle *.asn make -f converte-example.mk # If you use ‘make‘ 这里有一个小的技巧，因为我们在第一章中，输入的asn文件在asn_files文件夹下，输出在out下，因此我这里编译的时候需要将Makefile.am.libasncodec复制到out下，然后修改converter-example.mk如下部分：
+#修改前 include /Makefile.am.libasncodec ASN_PROGRAM_SRCS ?= \ out/converter-example.c #修改后 include /Makefile.am.libasncodec ASN_PROGRAM_SRCS ?= \ out/converter-example.c 2.3 命令行配置 下边表格总结了ASN1C的命令行选项。
 阶段选择选项 描述 -E 在执行解析阶段后停止，并打印重建的 ASN.1规范代码到标准输出。 -F 和-E选项一起使用，指示编译器在 ASN.1 语法树修复阶段后停止并将重构的 ASN.1 规范转储到标准输出。 -P 将编译后的输出转储到标准输出，而不是在磁盘上创建目标语言文件。 -R 限制编译器只生成 ASN.1 表，省略通常的支持代码。 -S 指定文件夹下的ASN.1文件。 -X 为指定的ASN.1模块生成XML DTD。 警告选项 描述 -Werror 将警告视为错误； 如果产生任何警告则中止 -Wdebug-parser 在 ASN.1 解析阶段启用解析器调试 -Wdebug-lexer 在 ASN.1 解析阶段启用词法分析器调试。 -Wdebug-fixer 在修复过程中启用 ASN.1 语法树修复器调试器。 -Wdebug-compiler 在实际编译时启用调试 语言配置 描述 -fbless-SIZE *允许INTEGER, ENUMERATED和其他类型的约束，通常为了防止数据数值范围超出导致错误禁止该选项，即数值超出范围不会报错。*这违反了ASN.1标准，可能导致生成的代码没有用。待验证 -fcompound-names 对 C 结构使用复杂的名称。如果模块在多个上下文中重用相同的标识符，则使用复杂的名称可以防止名称冲突 -findirect-choice 为 CHOICE 类型生成代码时，编译 CHOICE成员作为间接指针而不是内联声明。考虑将此选项与 -fno-includedeps 一起使用以防止循环引用。 -fincludes-quoted 在“double”而不是 引号中生成 #include 行。 -fknown-extern-type= 假装指定的类型是已知的。 编译器会假设给定类型的目标语言源文件已手动提供。 -fline-refs 在生成的代码注释中包含 ASN.1 模块的行号。 -fno-constraints 不产生ASN.1的类型约束代码片段，这样可执行文件小一点 。 -fno-include-deps 不为非关键项生成#include包含。 -fwide-types 使用泛类型定义(INTEGER_t, REAL_t )，而不是机器自身的类型定义(long, double )。 -no-gen-OER 不生成OER支持代码 -no-gen-PER 不生成PER支持代码 -no-gen-example 不生产ASN.1格式转换示例。 -pdu={all \ auto \ 输出选项 描述 -print-class-matrix 当配置了-EF选项，这个选项指示编译器打印收集到的ASN对象矩阵。 -print-constraints 当配置了-EF选项，此选项指示编译器打印其对子类型约束的内部理解。 -print-lines 在 -E 输出中生成“&ndash; #line”注释 API参考 本章中描述的函数供开发人员使用。这些功能在下一个主要版本之前不太可能改变或被删除。
 此处未列出的 API 调用不是公开的，不应由应用程序调用。
 3.1 宏定义 ASN_STRUCT_FREE() macro 概要 #define ASN_STRUCT_FREE(type_descriptor, struct_ptr) 描述 递归释放由type_descriptor描述的结构所占用的内存。并由struct_ptr指针引用。
