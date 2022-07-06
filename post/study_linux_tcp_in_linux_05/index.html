@@ -14,11 +14,11 @@
 <span>|
 <i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>1681 字</span></span>
+<span class=leancloud-world-count>3190 字</span></span>
 <span>|
 <i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>4分钟</span></span>
+<span class=leancloud-view-count>7分钟</span></span>
 <span id=/post/study_linux_tcp_in_linux_05/ class=leancloud_visitors data-flag-title=自上而下理解内核网络(五)---网络层（IP协议）数据的接收与发送>|
 <i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
@@ -54,7 +54,197 @@
 </span></span><span style=display:flex><span>	dev_add_pack(<span style=color:#666>&amp;</span>ip_packet_type);
 </span></span><span style=display:flex><span>	......
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p><code>dev_add_pack()</code>将<code>ip_rcv()</code>指定为IPv4数据包的协议处理程序。<code>inet_init()</code>执行各种IPv4初始化工作，在引导阶段被调用。</p><h2 id=本机发送数据>本机发送数据</h2><p>从上一节我们知道，在UDP协议发送数据最后，由"<code>udp_send_skb</code>来处理skb，将数据传入到协议栈的下一层，也就是IP协议栈",因此，我们这里从<code>udp_send_skb()</code>开始入手。</p><p>这里大致画了一张UDP数据在IP协议层的流向，来展示数据的发送过程：</p><p><img src=https://s2.loli.net/2022/07/06/LHn6YMTglrh4exX.jpg alt=ip_proto_udp_send_skb></p><h2 id=本机接收数据ip_rcv>本机接收数据ip_rcv</h2><p><img src=https://s2.loli.net/2022/07/06/OSHJbgex2z3cFWv.jpg alt=ip_proto_ip_rcv></p></div><footer class=post-footer><div class=post-tags><a href=/tags/%e8%87%aa%e4%b8%8a%e8%80%8c%e4%b8%8b%e7%90%86%e8%a7%a3%e5%86%85%e6%a0%b8%e7%bd%91%e7%bb%9c rel=tag title=自上而下理解内核网络>#自上而下理解内核网络#</a></div><div class=post-nav><div class=article-copyright><div class=article-copyright-img><img src=/img/qq_qrcode.png width=129px height=129px><div style=text-align:center>微信扫一扫关注</div></div><div class=article-copyright-info><p><span>声明：</span>自上而下理解内核网络(五)---网络层（IP协议）数据的接收与发送</p><p><span>链接：</span>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_05/</p><p><span>作者：</span>MD小智</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
+</span></span></code></pre></div><p><code>dev_add_pack()</code>将<code>ip_rcv()</code>指定为IPv4数据包的协议处理程序。<code>inet_init()</code>执行各种IPv4初始化工作，在引导阶段被调用。</p><h2 id=本机发送数据>本机发送数据</h2><p>从上一节我们知道，在UDP协议发送数据最后，由"<code>udp_send_skb</code>来处理skb，将数据传入到协议栈的下一层，也就是IP协议栈",因此，我们这里从<code>udp_send_skb()</code>开始入手。</p><p>这里大致画了一张UDP数据在IP协议层的流向，来展示数据的发送过程：</p><h2 id=image-20220706133554445httpss2lolinet202207061vikmnygze64kcgpng本机接收数据ip_rcv><img src=https://s2.loli.net/2022/07/06/1VIkMNygZe64KCG.png alt=image-20220706133554445>本机接收数据ip_rcv</h2><p><img src=https://s2.loli.net/2022/07/06/OSHJbgex2z3cFWv.jpg alt=ip_proto_ip_rcv></p><h3 id=ip_rcv>ip_rcv</h3><p>该函数的定义位于文件<a href=https://github.com/torvalds/linux/blob/master/net/ipv4/ip_input.c#L548-L571>ip_input.c</a>。<code>ip_rcv()</code>主要完成数据包的完整性检查，实际的工作通过<code>ip_rcv_finish()</code>来完成。</p><ul><li>判断是其他主机的数据包，则丢弃；</li><li>检查IPv4的包头大小和版本；</li><li>调用钩子函数NF_INET_PRE_ROUTING，我们这里假设没有调用，直接调用下一个函数ip_rcv_finish，真正处理数据。</li></ul><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> * 	Main IP Receive routine.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic> */</span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>ip_rcv</span>(<span style=color:#a2f;font-weight:700>struct</span> sk_buff <span style=color:#666>*</span>skb, <span style=color:#a2f;font-weight:700>struct</span> net_device <span style=color:#666>*</span>dev, <span style=color:#a2f;font-weight:700>struct</span> packet_type <span style=color:#666>*</span>pt, <span style=color:#a2f;font-weight:700>struct</span> net_device <span style=color:#666>*</span>orig_dev)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>const</span> <span style=color:#a2f;font-weight:700>struct</span> iphdr <span style=color:#666>*</span>iph;
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>struct</span> net <span style=color:#666>*</span>net;
+</span></span><span style=display:flex><span>	u32 len;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* When the interface is in promisc. mode, drop all the crap
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 * that it receives, do not try to analyse it.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 */</span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>/* 判断是其他主机的数据包，则丢弃；*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (skb<span style=color:#666>-&gt;</span>pkt_type <span style=color:#666>==</span> PACKET_OTHERHOST)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	net <span style=color:#666>=</span> dev_net(dev);
+</span></span><span style=display:flex><span>	__IP_UPD_PO_STATS(net, IPSTATS_MIB_IN, skb<span style=color:#666>-&gt;</span>len);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	skb <span style=color:#666>=</span> skb_share_check(skb, GFP_ATOMIC);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (<span style=color:#666>!</span>skb) {
+</span></span><span style=display:flex><span>		__IP_INC_STATS(net, IPSTATS_MIB_INDISCARDS);
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> out;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (<span style=color:#666>!</span>pskb_may_pull(skb, <span style=color:#a2f;font-weight:700>sizeof</span>(<span style=color:#a2f;font-weight:700>struct</span> iphdr)))
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> inhdr_error;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	iph <span style=color:#666>=</span> ip_hdr(skb);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	RFC1122: 3.2.1.2 MUST silently discard any IP frame that fails the checksum.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	Is the datagram acceptable?
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	1.	Length at least the size of an ip header
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	2.	Version of 4
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	3.	Checksums correctly. [Speed optimisation for later, skip loopback checksums]
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	4.	Doesn&#39;t have a bogus length
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 */</span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* 检查IPv4的包头大小和版本 */</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (iph<span style=color:#666>-&gt;</span>ihl <span style=color:#666>&lt;</span> <span style=color:#666>5</span> <span style=color:#666>||</span> iph<span style=color:#666>-&gt;</span>version <span style=color:#666>!=</span> <span style=color:#666>4</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> inhdr_error;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	BUILD_BUG_ON(IPSTATS_MIB_ECT1PKTS <span style=color:#666>!=</span> IPSTATS_MIB_NOECTPKTS <span style=color:#666>+</span> INET_ECN_ECT_1);
+</span></span><span style=display:flex><span>	BUILD_BUG_ON(IPSTATS_MIB_ECT0PKTS <span style=color:#666>!=</span> IPSTATS_MIB_NOECTPKTS <span style=color:#666>+</span> INET_ECN_ECT_0);
+</span></span><span style=display:flex><span>	BUILD_BUG_ON(IPSTATS_MIB_CEPKTS <span style=color:#666>!=</span> IPSTATS_MIB_NOECTPKTS <span style=color:#666>+</span> INET_ECN_CE);
+</span></span><span style=display:flex><span>	__IP_ADD_STATS(net,
+</span></span><span style=display:flex><span>		       IPSTATS_MIB_NOECTPKTS <span style=color:#666>+</span> (iph<span style=color:#666>-&gt;</span>tos <span style=color:#666>&amp;</span> INET_ECN_MASK),
+</span></span><span style=display:flex><span>		       max_t(<span style=color:#0b0;font-weight:700>unsigned</span> <span style=color:#0b0;font-weight:700>short</span>, <span style=color:#666>1</span>, skb_shinfo(skb)<span style=color:#666>-&gt;</span>gso_segs));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (<span style=color:#666>!</span>pskb_may_pull(skb, iph<span style=color:#666>-&gt;</span>ihl<span style=color:#666>*</span><span style=color:#666>4</span>))
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> inhdr_error;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	iph <span style=color:#666>=</span> ip_hdr(skb);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (unlikely(ip_fast_csum((u8 <span style=color:#666>*</span>)iph, iph<span style=color:#666>-&gt;</span>ihl)))
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> csum_error;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	len <span style=color:#666>=</span> ntohs(iph<span style=color:#666>-&gt;</span>tot_len);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (skb<span style=color:#666>-&gt;</span>len <span style=color:#666>&lt;</span> len) {
+</span></span><span style=display:flex><span>		__IP_INC_STATS(net, IPSTATS_MIB_INTRUNCATEDPKTS);
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> (len <span style=color:#666>&lt;</span> (iph<span style=color:#666>-&gt;</span>ihl<span style=color:#666>*</span><span style=color:#666>4</span>))
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> inhdr_error;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* Our transport medium may have padded the buffer out. Now we know it
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 * is IP we can trim to the true length of the frame.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 * Note this now means skb-&gt;len holds ntohs(iph-&gt;tot_len).
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 */</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (pskb_trim_rcsum(skb, len)) {
+</span></span><span style=display:flex><span>		__IP_INC_STATS(net, IPSTATS_MIB_INDISCARDS);
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	skb<span style=color:#666>-&gt;</span>transport_header <span style=color:#666>=</span> skb<span style=color:#666>-&gt;</span>network_header <span style=color:#666>+</span> iph<span style=color:#666>-&gt;</span>ihl<span style=color:#666>*</span><span style=color:#666>4</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* Remove any debris in the socket control block */</span>
+</span></span><span style=display:flex><span>	memset(IPCB(skb), <span style=color:#666>0</span>, <span style=color:#a2f;font-weight:700>sizeof</span>(<span style=color:#a2f;font-weight:700>struct</span> inet_skb_parm));
+</span></span><span style=display:flex><span>	IPCB(skb)<span style=color:#666>-&gt;</span>iif <span style=color:#666>=</span> skb<span style=color:#666>-&gt;</span>skb_iif;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* Must drop socket now because of tproxy. */</span>
+</span></span><span style=display:flex><span>	skb_orphan(skb);
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* 调用钩子函数NF_INET_PRE_ROUTING，我们这里假设没有调用，直接调用下一个函数ip_rcv_finish，真正处理数据*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span> NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING,
+</span></span><span style=display:flex><span>		       net, <span style=color:#a2f>NULL</span>, skb, dev, <span style=color:#a2f>NULL</span>,
+</span></span><span style=display:flex><span>		       ip_rcv_finish);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a0a000>csum_error</span>:
+</span></span><span style=display:flex><span>	__IP_INC_STATS(net, IPSTATS_MIB_CSUMERRORS);
+</span></span><span style=display:flex><span><span style=color:#a0a000>inhdr_error</span>:
+</span></span><span style=display:flex><span>	__IP_INC_STATS(net, IPSTATS_MIB_INHDRERRORS);
+</span></span><span style=display:flex><span><span style=color:#a0a000>drop</span>:
+</span></span><span style=display:flex><span>	kfree_skb(skb);
+</span></span><span style=display:flex><span><span style=color:#a0a000>out</span>:
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span> NET_RX_DROP;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=ip_rcv_finish>ip_rcv_finish</h3><ul><li>skb_dst()用于检查是否有与skb相关联dst对象，dst是一个dst_entry实例，表示路由选择子系统的查找结果。</li><li>如果没有与<code>SKB</code>关联的<code>dst</code>，则由<code>ip_route_input_noref()</code>在路由选择子系统中执行查找，如果查找失败，数据包被丢弃；在<code>ip_route_input_noref()</code>中，查找工作是根据路由选择表和数据包头进行的。在路由选择子系统中查找时，也会设置<code>dst</code>的<code>input</code>和<code>output</code>回调函数。例如，如果需要对数据包进行准发，在路由选择子系统查找时把<code>input</code>回调设置成<code>ip_forward()</code>；如果目的是当前机器，则<code>input</code>是为<code>ip_local_deliver()</code>；如果是组播，则<code>input</code>回调设置为<code>ip_mr_input()</code>。也就是dst决定了数据包的后续走向。</li><li>检查IPv4报头是否包含选项；</li><li>通过<code>dst_input</code>，调用<code>skb_dst(skb)->input(skb)</code>将数据传输到上一层。</li></ul><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>int</span> <span style=color:#00a000>ip_rcv_finish</span>(<span style=color:#a2f;font-weight:700>struct</span> net <span style=color:#666>*</span>net, <span style=color:#a2f;font-weight:700>struct</span> sock <span style=color:#666>*</span>sk, <span style=color:#a2f;font-weight:700>struct</span> sk_buff <span style=color:#666>*</span>skb)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>const</span> <span style=color:#a2f;font-weight:700>struct</span> iphdr <span style=color:#666>*</span>iph <span style=color:#666>=</span> ip_hdr(skb);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>struct</span> rtable <span style=color:#666>*</span>rt;
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>struct</span> net_device <span style=color:#666>*</span>dev <span style=color:#666>=</span> skb<span style=color:#666>-&gt;</span>dev;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/* if ingress device is enslaved to an L3 master device pass the
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 * skb to its handler for processing
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 */</span>
+</span></span><span style=display:flex><span>	skb <span style=color:#666>=</span> l3mdev_ip_rcv(skb);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (<span style=color:#666>!</span>skb)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>return</span> NET_RX_SUCCESS;
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/*skb_dst()用于检查是否有与skb相关联dst对象*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (net<span style=color:#666>-&gt;</span>ipv4.sysctl_ip_early_demux <span style=color:#666>&amp;&amp;</span>
+</span></span><span style=display:flex><span>	    <span style=color:#666>!</span>skb_dst(skb) <span style=color:#666>&amp;&amp;</span>
+</span></span><span style=display:flex><span>	    <span style=color:#666>!</span>skb<span style=color:#666>-&gt;</span>sk <span style=color:#666>&amp;&amp;</span>
+</span></span><span style=display:flex><span>	    <span style=color:#666>!</span>ip_is_fragment(iph)) {
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>const</span> <span style=color:#a2f;font-weight:700>struct</span> net_protocol <span style=color:#666>*</span>ipprot;
+</span></span><span style=display:flex><span>		<span style=color:#0b0;font-weight:700>int</span> protocol <span style=color:#666>=</span> iph<span style=color:#666>-&gt;</span>protocol;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>		ipprot <span style=color:#666>=</span> rcu_dereference(inet_protos[protocol]);
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>if</span> (ipprot <span style=color:#666>&amp;&amp;</span> ipprot<span style=color:#666>-&gt;</span>early_demux) {
+</span></span><span style=display:flex><span>			ipprot<span style=color:#666>-&gt;</span>early_demux(skb);
+</span></span><span style=display:flex><span>			<span style=color:#080;font-style:italic>/* must reload iph, skb-&gt;head might have changed */</span>
+</span></span><span style=display:flex><span>			iph <span style=color:#666>=</span> ip_hdr(skb);
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/*
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	Initialise the virtual path cache for the packet. It describes
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 *	how the packet travels inside Linux networking.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>	 */</span>
+</span></span><span style=display:flex><span>	 <span style=color:#080;font-style:italic>/*如果没有与SKB关联的dst，则由ip_route_input_noref()在卤藕选择子系统中执行查找，如果查找失败，数据包被丢弃。*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (<span style=color:#666>!</span>skb_valid_dst(skb)) {
+</span></span><span style=display:flex><span>		<span style=color:#0b0;font-weight:700>int</span> err <span style=color:#666>=</span> ip_route_input_noref(skb, iph<span style=color:#666>-&gt;</span>daddr, iph<span style=color:#666>-&gt;</span>saddr,
+</span></span><span style=display:flex><span>					       iph<span style=color:#666>-&gt;</span>tos, dev);
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>if</span> (unlikely(err)) {
+</span></span><span style=display:flex><span>			<span style=color:#a2f;font-weight:700>if</span> (err <span style=color:#666>==</span> <span style=color:#666>-</span>EXDEV)
+</span></span><span style=display:flex><span>				__NET_INC_STATS(net, LINUX_MIB_IPRPFILTER);
+</span></span><span style=display:flex><span>			<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080>#ifdef CONFIG_IP_ROUTE_CLASSID
+</span></span></span><span style=display:flex><span><span style=color:#080></span>	<span style=color:#a2f;font-weight:700>if</span> (unlikely(skb_dst(skb)<span style=color:#666>-&gt;</span>tclassid)) {
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>struct</span> ip_rt_acct <span style=color:#666>*</span>st <span style=color:#666>=</span> this_cpu_ptr(ip_rt_acct);
+</span></span><span style=display:flex><span>		u32 idx <span style=color:#666>=</span> skb_dst(skb)<span style=color:#666>-&gt;</span>tclassid;
+</span></span><span style=display:flex><span>		st[idx<span style=color:#666>&amp;</span><span style=color:#666>0xFF</span>].o_packets<span style=color:#666>++</span>;
+</span></span><span style=display:flex><span>		st[idx<span style=color:#666>&amp;</span><span style=color:#666>0xFF</span>].o_bytes <span style=color:#666>+=</span> skb<span style=color:#666>-&gt;</span>len;
+</span></span><span style=display:flex><span>		st[(idx<span style=color:#666>&gt;&gt;</span><span style=color:#666>16</span>)<span style=color:#666>&amp;</span><span style=color:#666>0xFF</span>].i_packets<span style=color:#666>++</span>;
+</span></span><span style=display:flex><span>		st[(idx<span style=color:#666>&gt;&gt;</span><span style=color:#666>16</span>)<span style=color:#666>&amp;</span><span style=color:#666>0xFF</span>].i_bytes <span style=color:#666>+=</span> skb<span style=color:#666>-&gt;</span>len;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span><span style=color:#080>#endif
+</span></span></span><span style=display:flex><span><span style=color:#080></span>	<span style=color:#080;font-style:italic>/*检查IPv4报头是否包含选项，不包含时这里ihl是4*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (iph<span style=color:#666>-&gt;</span>ihl <span style=color:#666>&gt;</span> <span style=color:#666>5</span> <span style=color:#666>&amp;&amp;</span> ip_rcv_options(skb))
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	rt <span style=color:#666>=</span> skb_rtable(skb);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> (rt<span style=color:#666>-&gt;</span>rt_type <span style=color:#666>==</span> RTN_MULTICAST) {
+</span></span><span style=display:flex><span>		__IP_UPD_PO_STATS(net, IPSTATS_MIB_INMCAST, skb<span style=color:#666>-&gt;</span>len);
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> (rt<span style=color:#666>-&gt;</span>rt_type <span style=color:#666>==</span> RTN_BROADCAST) {
+</span></span><span style=display:flex><span>		__IP_UPD_PO_STATS(net, IPSTATS_MIB_INBCAST, skb<span style=color:#666>-&gt;</span>len);
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> (skb<span style=color:#666>-&gt;</span>pkt_type <span style=color:#666>==</span> PACKET_BROADCAST <span style=color:#666>||</span>
+</span></span><span style=display:flex><span>		   skb<span style=color:#666>-&gt;</span>pkt_type <span style=color:#666>==</span> PACKET_MULTICAST) {
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>struct</span> in_device <span style=color:#666>*</span>in_dev <span style=color:#666>=</span> __in_dev_get_rcu(dev);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>		<span style=color:#080;font-style:italic>/* RFC 1122 3.3.6:
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   When a host sends a datagram to a link-layer broadcast
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   address, the IP destination address MUST be a legal IP
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   broadcast or IP multicast address.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   A host SHOULD silently discard a datagram that is received
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   via a link-layer broadcast (see Section 2.4) but does not
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *   specify an IP multicast or broadcast destination address.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 *
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 * This doesn&#39;t explicitly say L2 *broadcast*, but broadcast is
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 * in a way a form of multicast and the most common use case for
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 * this is 802.11 protecting against cross-station spoofing (the
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 * so-called &#34;hole-196&#34; attack) so do it for both.
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic>		 */</span>
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>if</span> (in_dev <span style=color:#666>&amp;&amp;</span>
+</span></span><span style=display:flex><span>		    IN_DEV_ORCONF(in_dev, DROP_UNICAST_IN_L2_MULTICAST))
+</span></span><span style=display:flex><span>			<span style=color:#a2f;font-weight:700>goto</span> drop;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>/*通过dst_input，调用skb_dst(skb)-&gt;input(skb)*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span> dst_input(skb);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a0a000>drop</span>:
+</span></span><span style=display:flex><span>	kfree_skb(skb);
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span> NET_RX_DROP;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/%e8%87%aa%e4%b8%8a%e8%80%8c%e4%b8%8b%e7%90%86%e8%a7%a3%e5%86%85%e6%a0%b8%e7%bd%91%e7%bb%9c rel=tag title=自上而下理解内核网络>#自上而下理解内核网络#</a></div><div class=post-nav><div class=article-copyright><div class=article-copyright-img><img src=/img/qq_qrcode.png width=129px height=129px><div style=text-align:center>微信扫一扫关注</div></div><div class=article-copyright-info><p><span>声明：</span>自上而下理解内核网络(五)---网络层（IP协议）数据的接收与发送</p><p><span>链接：</span>https://mdxz2048.github.io/post/study_linux_tcp_in_linux_05/</p><p><span>作者：</span>MD小智</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
 <span>赏</span></button><div id=QR style=display:none><div id=wechat style=display:inline-block><img id=wechat_qr src=/img/wechat-pay.png alt="WeChat Pay"><p>微信打赏</p></div><div id=alipay style=display:inline-block><img id=alipay_qr src=/img/ali-pay.png alt=Alipay><p>支付宝打赏</p></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://mdxz2048.github.io/post/study_valgrind_memcheck/ rel=prev title=内存调试工具Valgrind之Memcheck>内存调试工具Valgrind之Memcheck
 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
@@ -63,7 +253,7 @@
 <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>28</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/mdxz2048 target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
-标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%87%AA%E4%B8%8A%E8%80%8C%E4%B8%8B%E7%90%86%E8%A7%A3%E5%86%85%E6%A0%B8%E7%BD%91%E7%BB%9C>自上而下理解内核网络</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E6%96%87%E4%BB%B6%E5%90%8C%E6%AD%A5>文件同步</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/12306bypass>12306bypass</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/asn.1>Asn.1</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/asn1c%E7%BC%96%E8%AF%91%E5%99%A8>Asn1c编译器</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hexo>Hexo</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/markdown>Markdown</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/marktext>Marktext</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/nextcloud>Nextcloud</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/pdf%E8%BD%AC%E6%8D%A2>Pdf转换</a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#网络层的数据和路线>网络层的数据和路线</a><ul><li><a href=#ipv4协议首部>ipv4协议首部</a></li></ul></li><li><a href=#ipv4的初始化>IPV4的初始化</a></li><li><a href=#本机发送数据>本机发送数据</a></li><li><a href=#本机接收数据ip_rcv>本机接收数据ip_rcv</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%87%AA%E4%B8%8A%E8%80%8C%E4%B8%8B%E7%90%86%E8%A7%A3%E5%86%85%E6%A0%B8%E7%BD%91%E7%BB%9C>自上而下理解内核网络</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E6%96%87%E4%BB%B6%E5%90%8C%E6%AD%A5>文件同步</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/12306bypass>12306bypass</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/asn.1>Asn.1</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/asn1c%E7%BC%96%E8%AF%91%E5%99%A8>Asn1c编译器</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hexo>Hexo</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/markdown>Markdown</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/marktext>Marktext</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/nextcloud>Nextcloud</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/pdf%E8%BD%AC%E6%8D%A2>Pdf转换</a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#网络层的数据和路线>网络层的数据和路线</a><ul><li><a href=#ipv4协议首部>ipv4协议首部</a></li></ul></li><li><a href=#ipv4的初始化>IPV4的初始化</a></li><li><a href=#本机发送数据>本机发送数据</a></li><li><a href=#image-20220706133554445httpss2lolinet202207061vikmnygze64kcgpng本机接收数据ip_rcv><img src=https://s2.loli.net/2022/07/06/1VIkMNygZe64KCG.png alt=image-20220706133554445>本机接收数据ip_rcv</a><ul><li><a href=#ip_rcv>ip_rcv</a></li><li><a href=#ip_rcv_finish>ip_rcv_finish</a></li></ul></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
 <span class=with-love><i class="fa fa-heart"></i></span>
 <span class=copyright-author>MD小智</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.96.0</a></span>
 <span class=separator-line>/</span>
