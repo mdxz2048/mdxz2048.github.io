@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>计算那点事儿之0和1</title><url>https://mdxz2048.github.io/post/study_programmer_binary/</url><categories><category>程序员的日常</category></categories><tags><tag>编码</tag><tag>标签2</tag></tags><content type="html"> 实验名称 Proteus逻辑门演示实验
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>计算机那点事儿之0和1</title><url>https://mdxz2048.github.io/post/study_programmer_binary/</url><categories><category>程序员的日常</category></categories><tags><tag>编码</tag></tags><content type="html"> 实验名称 Proteus逻辑门演示实验
 实验目的 我们都或多或少听过，整个电脑无论是图像、视频还是声音计算，最后都被当做0和1来处理，我们本文就来借助仿真软件Proteus，模拟出数字电路中的基础逻辑电路：与门(AND)、或门(OR)、与非门(NAND)和或非门(NOR)。
 实验背景 终于经过2周的时间，《编码—隐匿在计算机软硬件背后的语言》这本书进入到了正式篇，本周的主要内容就是以数字电路为基础搭建加法器和减法器，这应该算是各种CPU数字电路的基础组成部分了，哪怕是苹果新发布得到A16，也脱离不了这种基本的硬件原理，版本的迭代更多是工艺上的进步，15nm到4nm，更多不同的是因为工艺的提升，带来单位面积上可以放置的晶体管数量的不同。但对于我们了解和学习计算机原理，A15/16显然不适合我们入门，反而是这种通过简单的开关、电源、继电器和小灯泡组成的小的电路，更有助于我们了解如何通过电路帮我们计算加法和减法，学习基本的计算机运行原理。
 本文将通过电路仿真软件proteus，来模拟演示如何用小灯泡演示与门、或门、与非门和或非门电路。
