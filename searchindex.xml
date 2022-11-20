@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>计算机那点事儿之触发器(中)</title><url>https://mdxz2048.github.io/post/study_programmer_trigger_d/</url><categories><category>程序员的日常</category></categories><tags><tag>D触发器</tag><tag>RS触发器</tag></tags><content type="html"> 触发器的基本特征 在数字系统中，不仅要对二进信号进行算术运算和逻辑运算，还要把运算结果保存起来，这就需要具有记忆功能的逻辑单元电路。把这种能够存储一位二进制数码的基本单元电路统称为触发器。触发器有两个基本特征：
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>计算机那点事儿之触发器(中)</title><url>https://mdxz2048.github.io/post/study_programmer_trigger_d/</url><categories><category>程序员的日常</category></categories><tags><tag>D触发器</tag><tag>RS</tag></tags><content type="html"> 触发器的基本特征 在数字系统中，不仅要对二进信号进行算术运算和逻辑运算，还要把运算结果保存起来，这就需要具有记忆功能的逻辑单元电路。把这种能够存储一位二进制数码的基本单元电路统称为触发器。触发器有两个基本特征：
 具有两个能自行保持稳定的基本状态，用来表示逻辑状态0和1，或者二进制数字0和1； 在不同信号的作用下，触发器可以被置为1状态或0状态； 触发器种类 根据不同的维度，触发器将触发器分成不同的类别。
 我们这里主要介绍我们即将使用的RS触发器和D触发器，更多关于触发器的内容，可以参考维基百科的介绍。
 RS触发器 基本组成 真值表 输入 输出 S R Q Q的反相 1 0 1 0 0 1 0 1 0 0 保持 保持 1 1 禁止 禁止 演示 置位：当置位位(S)为1，复位位(R)为0时，Q输出为1； 复位：当置位位(S)为0，复位位(R)为1时，Q输出为0；
